@@ -54,13 +54,14 @@ Default: `'Enable ${extensionName} on this domain'`
 
 The title of the action in the context menu.
 
-##### reloadOnSuccess
+##### reloadOnSuccess 
+<img align="right" alt="Reload confirmation message" width="332" src="https://user-images.githubusercontent.com/1402241/32890310-2e503192-cb09-11e7-863c-a96df2bf838c.png">
 
 Type: `boolean` `string`
 
 Default: `Do you want to reload this page to apply ${extensionName}?`
 
-If the user accepts the new permission, they will be asked to reload the current tab. [Screenshot](https://user-images.githubusercontent.com/1402241/32887865-56237ef8-cb00-11e7-9e8f-a68754a5624a.png). Set a `string` to customize the message and `false` to avoid the reload and its request.
+If the user accepts the new permission, they will be asked to reload the current tab. Set a `string` to customize the message and `false` to avoid the reload and its request.
 
 
 ## Related
