@@ -28,7 +28,7 @@
       "webextensions"
     ],
     "rules": {
-      "no-alert": "0"
+      "no-alert": 0
     }
   },
   "devDependencies": {
