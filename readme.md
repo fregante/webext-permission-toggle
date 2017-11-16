@@ -12,6 +12,17 @@ npm install webext-domain-permission-toggle
 
 ```json
 {
+	"browser_action": { // Required for Firefox support
+		"default_icon": "icon.png"
+	},
+	"permissions": [
+		"contextMenus",
+		"activeTab"
+	],
+	"optional_permissions": [
+		"http://*/*",
+		"https://*/*"
+	],
 	"background": {
 		"scripts": [
 			"webext-domain-permission-toggle.js",
