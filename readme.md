@@ -1,4 +1,4 @@
-# webext-domain-permission-toggle [![Travis build status](https://api.travis-ci.org/bfred-it/webext-domain-permission-toggle.svg?branch=master)](https://travis-ci.org/bfred-it/webext-domain-permission-toggle) [![npm version](https://img.shields.io/npm/v/webext-domain-permission-toggle.svg)](https://www.npmjs.com/package/webext-domain-permission-toggle) <img width="331" alt="Context menu" src="https://user-images.githubusercontent.com/1402241/32874388-e0c64150-cacc-11e7-9a50-eae3727fd3c2.png" align="right">
+# webext-domain-permission-toggle [![Travis build status](https://api.travis-ci.org/bfred-it/webext-domain-permission-toggle.svg?branch=master)](https://travis-ci.org/bfred-it/webext-domain-permission-toggle) [![npm version](https://img.shields.io/npm/v/webext-domain-permission-toggle.svg)](https://www.npmjs.com/package/webext-domain-permission-toggle)
 
 > WebExtension module: Browser-action context menu to request permission for the current tab.
 
@@ -38,11 +38,11 @@ DPT.addContextMenu();
 
 ### DPT.addContextMenu([options])
 
-Adds an item to the context menu in the extensions browser action. The user can right click on your icon and this will appear:
+<img width="331" alt="Context menu" src="https://user-images.githubusercontent.com/1402241/32874388-e0c64150-cacc-11e7-9a50-eae3727fd3c2.png" align="right">
 
-<img width="331" alt="Context menu" src="https://user-images.githubusercontent.com/1402241/32874388-e0c64150-cacc-11e7-9a50-eae3727fd3c2.png">
+Adds an item to the browser action icon's context menu (as shown in the screenshot).
 
-If your extension doesn't have any action or popup assigned to the icon, it will also appear with a left click.
+The user can access this meny by right clicking the icon. If your extension doesn't have any action or popup assigned to the icon, it will also appear with a left click.
 
 #### options
 
@@ -54,7 +54,7 @@ Default: `'Enable ${extensionName} on this domain'`
 
 The title of the action in the context menu.
 
-#####reloadOnSuccess
+##### reloadOnSuccess
 
 Type: `boolean` `string`
 
