@@ -11,14 +11,17 @@ const DCE = {
 			reloadOnSuccess: `Do you want to reload this page to apply ${extensionName}?`
 		}, options);
 
-		chrome.contextMenus.create({
-			id: contextMenuId,
-			title: options.title,
-			contexts: ['page_action'],
-			documentUrlPatterns: [
-				'http://*/*',
-				'https://*/*'
-			]
+		// This has to happen onInstalled in Event Pages
+		chrome.runtime.onInstalled.addListener(() => {
+			chrome.contextMenus.create({
+				id: contextMenuId,
+				title: options.title,
+				contexts: ['page_action'],
+				documentUrlPatterns: [
+					'http://*/*',
+					'https://*/*'
+				]
+			});
 		});
 
 		chrome.contextMenus.onClicked.addListener(async ({menuItemId}, {tabId, url}) => {
