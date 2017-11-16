@@ -5,7 +5,7 @@
 ## Install
 
 ```sh
-npm install webext-dynamic-content-scripts
+npm install webext-domain-permission-toggle
 ```
 
 ### manifest.json
@@ -14,7 +14,7 @@ npm install webext-dynamic-content-scripts
 {
 	"background": {
 		"scripts": [
-			"webext-dynamic-content-scripts.js",
+			"webext-domain-permission-toggle.js",
 			"background.js"
 		]
 	}
@@ -25,7 +25,7 @@ npm install webext-dynamic-content-scripts
 
 ```js
 // background.js
-import DPT from 'webext-dynamic-content-scripts';
+import DPT from 'webext-domain-permission-toggle';
 ```
 
 ## Usage
@@ -65,6 +65,7 @@ If the user accepts the new permission, they will be asked to reload the current
 
 ## Related
 
+* [`webext-dynamic-content-scripts`](https://github.com/bfred-it/webext-dynamic-content-scripts): Automatically inject your `content_scripts` on custom domains.
 * [`webext-content-script-ping`](https://github.com/bfred-it/webext-content-script-ping): One-file interface to detect whether your content script have loaded.
 * [`webext-options-sync`](https://github.com/bfred-it/webext-options-sync): Helps you manage and autosave your extension's options.
 * [`webext-inject-on-install`](https://github.com/bfred-it/webext-inject-on-install): Automatically add content scripts to existing tabs when your extension is installed.

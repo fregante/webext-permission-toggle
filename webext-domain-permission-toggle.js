@@ -2,7 +2,7 @@
 
 const DCE = {
 	addContextMenu(options) {
-		const contextMenuId = 'webext-dynamic-content-scripts:add-permission';
+		const contextMenuId = 'webext-domain-permission-toggle:add-permission';
 
 		const {name: extensionName} = chrome.runtime.getManifest();
 
