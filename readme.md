@@ -2,6 +2,8 @@
 
 > WebExtension module: Browser-action context menu to request permission for the current tab.
 
+Notice: this doesn't work in Firefox yet because of: https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
+
 ## Install
 
 ```sh
@@ -10,9 +12,9 @@ npm install webext-domain-permission-toggle
 
 ### manifest.json
 
-```json
+```js
 {
-	"browser_action": { // Required for Firefox support
+	"browser_action": { /* Firefox support */
 		"default_icon": "icon.png"
 	},
 	"permissions": [
