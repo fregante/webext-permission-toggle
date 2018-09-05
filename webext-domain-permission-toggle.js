@@ -24,7 +24,7 @@ const DCE = {
 			});
 		});
 
-		chrome.contextMenus.onClicked.addListener(async ({menuItemId}, {tabId, url}) => {
+		chrome.contextMenus.onClicked.addListener(({menuItemId}, {tabId, url}) => {
 			if (menuItemId !== contextMenuId) {
 				return;
 			}
