@@ -2,8 +2,6 @@
 
 > WebExtension module: Browser-action context menu to request permission for the current tab.
 
-Notice: this doesn't work in Firefox yet because of: https://bugzilla.mozilla.org/show_bug.cgi?id=1382953
-
 ## Install
 
 ```sh
@@ -80,7 +78,7 @@ If the user accepts the new permission, they will be asked to reload the current
 ## Related
 
 * [`webext-dynamic-content-scripts`](https://github.com/bfred-it/webext-dynamic-content-scripts): Automatically inject your `content_scripts` on custom domains.
-* [`webext-content-script-ping`](https://github.com/bfred-it/webext-content-script-ping): One-file interface to detect whether your content script have loaded.
+* [`webext-content-script-ping`](https://github.com/bfred-it/webext-content-script-ping): One-file interface to detect whether your content scripts have loaded.
 * [`webext-options-sync`](https://github.com/bfred-it/webext-options-sync): Helps you manage and autosave your extension's options.
 * [`webext-inject-on-install`](https://github.com/bfred-it/webext-inject-on-install): Automatically add content scripts to existing tabs when your extension is installed.
 * [`Awesome WebExtensions`](https://github.com/bfred-it/Awesome-WebExtensions): A curated list of awesome resources for Web Extensions development.
