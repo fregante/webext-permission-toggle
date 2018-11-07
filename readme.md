@@ -53,7 +53,7 @@ DPT.addContextMenu();
 
 Adds an item to the browser action icon's context menu (as shown in the screenshot).
 
-The user can access this meny by right clicking the icon. If your extension doesn't have any action or popup assigned to the icon, it will also appear with a left click.
+The user can access this menu by right clicking the icon. If your extension doesn't have any action or popup assigned to the icon, it will also appear with a left click.
 
 #### options
 
