@@ -14,9 +14,11 @@
     "chrome",
     "firefox"
   ],
+  "types": "index.d.ts",
   "main": "webext-domain-permission-toggle.js",
   "files": [
-    "webext-domain-permission-toggle.js"
+    "webext-domain-permission-toggle.js",
+    "index.d.ts"
   ],
   "scripts": {
     "watch": "onchange '*.js' --initial -- xo --fix",
