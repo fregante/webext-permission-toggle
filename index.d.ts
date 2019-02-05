@@ -4,5 +4,5 @@ declare module 'webext-domain-permission-toggle' {
 		reloadOnSuccess?: string;
 	}
 
-	export function addContextMenu(options: Options): void;
+	export function addContextMenu(options?: Options): void;
 }
