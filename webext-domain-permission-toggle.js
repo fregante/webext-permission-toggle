@@ -28,6 +28,7 @@ const DCE = {
 			if (menuItemId !== contextMenuId) {
 				return;
 			}
+
 			chrome.permissions.request({
 				origins: [
 					`${new URL(url).origin}/*`
