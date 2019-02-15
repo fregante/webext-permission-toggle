@@ -48,7 +48,7 @@
 		}, async ([origin] = []) => {
 			// We might have temporary permission as part of `activeTab`,
 			// so it needs to be properly checked
-			const checked = origin && await isOriginPermanentlyAllowed(origin);
+			const checked = Boolean(origin && await isOriginPermanentlyAllowed(origin));
 			chrome.contextMenus.update(contextMenuId, {checked});
 
 			return chrome.runtime.lastError; // Silence error
@@ -79,6 +79,7 @@
 		} catch (error) {
 			console.error(error.message);
 			alert(`Error: ${error.message}`);
+			updateItem({tabId})
 		}
 	}
 
