@@ -79,7 +79,7 @@
 		} catch (error) {
 			console.error(error.message);
 			alert(`Error: ${error.message}`);
-			updateItem({tabId})
+			updateItem({tabId});
 		}
 	}
 
