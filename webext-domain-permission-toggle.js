@@ -73,8 +73,12 @@
 				});
 			}
 
-			if (!wasChecked && successful && globalOptions.reloadOnSuccess && confirm(globalOptions.reloadOnSuccess)) {
-				chrome.tabs.reload(tabId);
+			if (!wasChecked && successful && globalOptions.reloadOnSuccess) {
+				// Firefox doesn't support `confirm()` from the background page.
+				// JSON.stringify escapes the string to avoid self-XSS
+				chrome.tabs.executeScript({
+					code: `confirm(${JSON.stringify(globalOptions.reloadOnSuccess)}) && location.reload()`
+				});
 			}
 		} catch (error) {
 			console.error(error.message);
