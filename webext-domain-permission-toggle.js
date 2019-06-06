@@ -111,6 +111,6 @@
 	if (typeof module === 'object') {
 		module.exports = {addContextMenu};
 	} else {
-		window.DCE = {addContextMenu};
+		window.DPT = {addContextMenu};
 	}
 })();
