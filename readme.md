@@ -77,10 +77,10 @@ If the user accepts the new permission, they will be asked to reload the current
 
 ## Related
 
+* [`webext-options-sync`](https://github.com/bfred-it/webext-options-sync): Helps you manage and autosave your extension's options.
+* [`webext-detect-page`](https://github.com/bfred-it/webext-detect-page): Detects where the current browser extension code is being run.
 * [`webext-dynamic-content-scripts`](https://github.com/bfred-it/webext-dynamic-content-scripts): Automatically inject your `content_scripts` on custom domains.
 * [`webext-content-script-ping`](https://github.com/bfred-it/webext-content-script-ping): One-file interface to detect whether your content scripts have loaded.
-* [`webext-options-sync`](https://github.com/bfred-it/webext-options-sync): Helps you manage and autosave your extension's options.
-* [`webext-inject-on-install`](https://github.com/bfred-it/webext-inject-on-install): Automatically add content scripts to existing tabs when your extension is installed.
 * [`Awesome WebExtensions`](https://github.com/bfred-it/Awesome-WebExtensions): A curated list of awesome resources for Web Extensions development.
 
 ## License
