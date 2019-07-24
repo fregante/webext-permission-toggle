@@ -1,4 +1,4 @@
-// https://github.com/bfred-it/webext-domain-permission-toggle
+// https://github.com/fregante/webext-domain-permission-toggle
 
 const DCE = {
 	addContextMenu(options) {
