@@ -2,6 +2,8 @@
 
 > WebExtension module: Browser-action context menu to request permission for the current tab.
 
+Works great when paired with [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts). Look into that module’s Usage section in the Readme for a full implementation.
+
 ## Install
 
 ```sh
@@ -75,14 +77,23 @@ Default: `Do you want to reload this page to apply ${extensionName}?`
 If the user accepts the new permission, they will be asked to reload the current tab. Set a `string` to customize the message and `false` to avoid the reload and its request.
 
 
+
 ## Related
 
-* [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts) - Automatically inject your `content_scripts` on custom domains.
-* [webext-options-sync](https://github.com/fregante/webext-options-sync) - Helps you manage and autosave your extension's options.
-* [webext-storage-cache](https://github.com/fregante/webext-storage-cache) - Map-like promised cache storage with expiration.
-* [webext-detect-page](https://github.com/fregante/webext-detect-page) - Detects where the current browser extension code is being run.
+### Permissions
+
+* [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts) - Automatically registers your content_scripts on domains added via permission.request
+* [webext-additional-permissions](https://github.com/fregante/webext-additional-permissions) - Get any optional permissions that users have granted you.
+* [webext-permissions-events-polyfill](https://github.com/fregante/webext-permissions-events-polyfill) - Polyfill for `onAdded` and `onRemoved` permission events for Firefox. (included in `webext-dynamic-content-scripts`)
+
+### Others
+
+* [webext-options-sync](https://github.com/fregante/webext-options-sync) - Helps you manage and autosave your extension's options. Chrome and Firefox.
+* [webext-storage-cache](https://github.com/fregante/webext-storage-cache) - Map-like promised cache storage with expiration. Chrome and Firefox
+* [webext-detect-page](https://github.com/fregante/webext-detect-page) - Detects where the current browser extension code is being run. Chrome and Firefox.
 * [webext-content-script-ping](https://github.com/fregante/webext-content-script-ping) - One-file interface to detect whether your content script have loaded.
-* [`Awesome WebExtensions`](https://github.com/fregante/Awesome-WebExtensions): A curated list of awesome resources for Web Extensions development.
+* [web-ext-submit](https://github.com/fregante/web-ext-submit) - Wrapper around Mozilla’s web-ext to submit extensions to AMO.
+* [Awesome-WebExtensions](https://github.com/fregante/Awesome-WebExtensions) - A curated list of awesome resources for WebExtensions development.
 
 ## License
 
