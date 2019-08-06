@@ -1,3 +1,5 @@
+import {getManifestPermissions} from 'webext-additional-permissions';
+
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
 let currentTabId: number;
 let globalOptions: Options;
@@ -59,10 +61,13 @@ function updateItem({tabId}: {tabId: number}): void {
 	chrome.tabs.executeScript(tabId, {
 		code: 'location.origin'
 	}, async ([origin] = []) => {
-		// We might have temporary permission as part of `activeTab`,
-		// so it needs to be properly checked
-		const checked = Boolean(origin && await isOriginPermanentlyAllowed(origin));
-		chrome.contextMenus.update(contextMenuId, {checked});
+		// Manifest permissions can't be removed; this disables the toggle on those domains
+		const manifestPermissions = await getManifestPermissions();
+		const enabled = !manifestPermissions.origins.some(permission => permission.startsWith(origin));
+
+		// We might have temporary permission as part of `activeTab`, so it needs to be properly checked
+		const checked = enabled || Boolean(origin && await isOriginPermanentlyAllowed(origin));
+		chrome.contextMenus.update(contextMenuId, {checked, enabled});
 
 		return chrome.runtime.lastError; // Silence error
 	});

@@ -44,6 +44,9 @@
 			"no-alert": "off"
 		}
 	},
+	"dependencies": {
+		"webext-additional-permissions": "^0.1.0"
+	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^0.4.0",
 		"@types/chrome": "0.0.86",
