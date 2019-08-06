@@ -1,39 +1,57 @@
 {
-  "name": "webext-domain-permission-toggle",
-  "version": "1.0.0-0",
-  "description": "Browser-action context menu to request permission for the current tab.",
-  "keywords": [
-    "browser",
-    "chrome",
-    "extension",
-    "firefox",
-    "permission",
-    "ui",
-    "webextension"
-  ],
-  "repository": "fregante/webext-domain-permission-toggle",
-  "license": "MIT",
-  "author": "Federico Brigante <opensource@bfred.it> (bfred.it)",
-  "files": [
-    "webext-domain-permission-toggle.js",
-    "index.d.ts"
-  ],
-  "main": "webext-domain-permission-toggle.js",
-  "scripts": {
-    "test": "xo",
-    "watch": "onchange '*.js' --initial -- xo --fix"
-  },
-  "xo": {
-    "envs": [
-      "browser",
-      "webextensions"
-    ],
-    "rules": {
-      "no-alert": 0
-    }
-  },
-  "devDependencies": {
-    "onchange": "^3.2.0",
-    "xo": "*"
-  }
+	"name": "webext-domain-permission-toggle",
+	"version": "1.0.0-0",
+	"description": "Browser-action context menu to request permission for the current tab.",
+	"keywords": [
+		"browser",
+		"chrome",
+		"extension",
+		"firefox",
+		"permission",
+		"ui",
+		"webextension"
+	],
+	"repository": "fregante/webext-domain-permission-toggle",
+	"license": "MIT",
+	"author": "Federico Brigante <opensource@bfred.it> (bfred.it)",
+	"files": [
+		"index.js",
+		"index.d.ts",
+		"module/index.js"
+	],
+	"module": "module/index.js",
+	"scripts": {
+		"build": "tsc && tsc --module es2015 --outDir module --declaration false",
+		"prepublishOnly": "npm run build --silent",
+		"test": "xo && tsc --noEmit",
+		"watch": "tsc --watch"
+	},
+	"xo": {
+		"envs": [
+			"browser",
+			"webextensions"
+		],
+		"extensions": [
+			"ts"
+		],
+		"overrides": [
+			{
+				"files": "**/*.ts",
+				"extends": "xo-typescript"
+			}
+		],
+		"rules": {
+			"no-alert": "off"
+		}
+	},
+	"devDependencies": {
+		"@sindresorhus/tsconfig": "^0.4.0",
+		"@types/chrome": "0.0.86",
+		"@types/firefox-webext-browser": "^67.0.2",
+		"@typescript-eslint/eslint-plugin": "^1.9.0",
+		"@typescript-eslint/parser": "^1.11.0",
+		"eslint-config-xo-typescript": "^0.15.0",
+		"typescript": "^3.5.0",
+		"xo": "*"
+	}
 }
