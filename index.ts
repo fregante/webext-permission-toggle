@@ -128,11 +128,12 @@ export default function addDomainPermissionToggle(options?: Options): void {
 		reloadOnSuccess: `Do you want to reload this page to apply ${name}?`, ...options};
 
 	chrome.contextMenus.onClicked.addListener(handleClick);
-	chrome.runtime.onInstalled.addListener(createMenu);
 	chrome.tabs.onActivated.addListener(updateItem);
 	chrome.tabs.onUpdated.addListener((tabId, {status}) => {
 		if (currentTabId === tabId && status === 'complete') {
 			updateItem({tabId});
 		}
 	});
+
+	createMenu();
 }
