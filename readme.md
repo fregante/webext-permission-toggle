@@ -6,8 +6,21 @@ Works great when paired with [webext-dynamic-content-scripts](https://github.com
 
 ## Install
 
+You can just download the [standalone bundle](https://packd.fregante.now.sh/webext-domain-permission-toggle@latest?name=addDomainPermissionToggle) (it might take a minute to download) and include the file in your `manifest.json`, or:
+
 ```sh
 npm install webext-domain-permission-toggle
+```
+
+```js
+import addDomainPermissionToggle from 'webext-domain-permission-toggle';
+```
+
+## Usage
+
+```js
+// In background.js
+addDomainPermissionToggle();
 ```
 
 ### manifest.json
@@ -34,22 +47,9 @@ npm install webext-domain-permission-toggle
 }
 ```
 
-### webpack, rollup, browserify
-
-```js
-// background.js
-import DPT from 'webext-domain-permission-toggle';
-```
-
-## Usage
-
-```js
-DPT.addContextMenu();
-```
-
 ## API
 
-### DPT.addContextMenu([options])
+### addDomainPermissionToggle([options])
 
 <img width="331" alt="Context menu" src="https://user-images.githubusercontent.com/1402241/32874388-e0c64150-cacc-11e7-9a50-eae3727fd3c2.png" align="right">
 
