@@ -61,15 +61,21 @@ function updateItem({tabId}: {tabId: number}): void {
 	chrome.tabs.executeScript(tabId, {
 		code: 'location.origin'
 	}, async ([origin] = []) => {
-		// Manifest permissions can't be removed; this disables the toggle on those domains
-		const manifestPermissions = await getManifestPermissions();
-		const enabled = !manifestPermissions.origins.some(permission => permission.startsWith(origin));
+		const settings = {
+			checked: false,
+			enabled: true
+		};
+		if (!chrome.runtime.lastError && origin) {
+			// Manifest permissions can't be removed; this disables the toggle on those domains
+			const manifestPermissions = await getManifestPermissions();
+			const isDefault = manifestPermissions.origins.some(permission => permission.startsWith(origin));
+			settings.enabled = !isDefault;
 
-		// We might have temporary permission as part of `activeTab`, so it needs to be properly checked
-		const checked = enabled || Boolean(origin && await isOriginPermanentlyAllowed(origin));
-		chrome.contextMenus.update(contextMenuId, {checked, enabled});
+			// We might have temporary permission as part of `activeTab`, so it needs to be properly checked
+			settings.checked = isDefault || await isOriginPermanentlyAllowed(origin);
+		}
 
-		return chrome.runtime.lastError; // Silence error
+		chrome.contextMenus.update(contextMenuId, settings);
 	});
 }
 
