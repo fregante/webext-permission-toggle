@@ -4,7 +4,7 @@
 
 > WebExtension module: Browser-action context menu to request permission for the current tab.
 
-Works great when paired with [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts). Look into that module’s Usage section in the Readme for a full implementation.
+Works great when paired with [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts/blob/master/how-to-add-github-enterprise-support-to-web-extensions.md) if you want to also inject content scripts on the new domains.
 
 ## Install
 
