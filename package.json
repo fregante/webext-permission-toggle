@@ -16,13 +16,12 @@
 	"author": "Federico Brigante <opensource@bfred.it> (bfred.it)",
 	"files": [
 		"index.js",
-		"index.d.ts",
-		"module/index.js"
+		"index.d.ts"
 	],
-	"module": "module/index.js",
+	"module": "index.js",
 	"scripts": {
-		"build": "tsc && tsc --module es2015 --outDir module --declaration false",
-		"prepublishOnly": "npm run build --silent",
+		"build": "tsc",
+		"prepublishOnly": "tsc",
 		"test": "xo && tsc --noEmit",
 		"watch": "tsc --watch"
 	},

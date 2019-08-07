@@ -112,7 +112,7 @@ async function handleClick({wasChecked, menuItemId}: chrome.contextMenus.OnClick
  *
  * @param options {Options}
  */
-export default function addContextMenu(options?: Options): void {
+export default function addDomainPermissionToggle(options?: Options): void {
 	if (globalOptions) {
 		throw new Error('webext-domain-permission-toggle can only be initialized once');
 	}
