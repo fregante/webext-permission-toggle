@@ -1,5 +1,7 @@
 # webext-domain-permission-toggle [![Travis build status](https://api.travis-ci.org/fregante/webext-domain-permission-toggle.svg?branch=master)](https://travis-ci.org/fregante/webext-domain-permission-toggle) [![npm version](https://img.shields.io/npm/v/webext-domain-permission-toggle.svg)](https://www.npmjs.com/package/webext-domain-permission-toggle)
 
+<img width="331" alt="Context menu" src="https://user-images.githubusercontent.com/1402241/32874388-e0c64150-cacc-11e7-9a50-eae3727fd3c2.png" align="right">
+
 > WebExtension module: Browser-action context menu to request permission for the current tab.
 
 Works great when paired with [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts). Look into that module’s Usage section in the Readme for a full implementation.
