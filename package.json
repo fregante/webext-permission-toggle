@@ -30,30 +30,23 @@
 			"browser",
 			"webextensions"
 		],
-		"extensions": [
-			"ts"
-		],
-		"overrides": [
-			{
-				"files": "**/*.ts",
-				"extends": "xo-typescript"
-			}
-		],
 		"rules": {
+			"@typescript-eslint/prefer-readonly-parameter-types": "off",
+			"@typescript-eslint/restrict-template-expressions": "off",
 			"no-alert": "off"
 		}
 	},
 	"dependencies": {
-		"webext-additional-permissions": "^0.1.0"
+		"webext-additional-permissions": "^1.0.0"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^0.4.0",
-		"@types/chrome": "0.0.86",
-		"@types/firefox-webext-browser": "^67.0.2",
-		"@typescript-eslint/eslint-plugin": "^1.9.0",
-		"@typescript-eslint/parser": "^1.11.0",
-		"eslint-config-xo-typescript": "^0.15.0",
-		"typescript": "^3.5.0",
-		"xo": "*"
+		"@sindresorhus/tsconfig": "^0.7.0",
+		"@types/chrome": "0.0.106",
+		"@types/firefox-webext-browser": "^70.0.1",
+		"@typescript-eslint/eslint-plugin": "^2.30.0",
+		"@typescript-eslint/parser": "^2.30.0",
+		"eslint-config-xo-typescript": "^0.28.0",
+		"typescript": "^3.8.3",
+		"xo": "^0.30.0"
 	}
 }
