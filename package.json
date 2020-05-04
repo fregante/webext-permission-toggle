@@ -21,7 +21,7 @@
 	"module": "index.js",
 	"scripts": {
 		"build": "tsc",
-		"prepublishOnly": "tsc",
+		"prepack": "tsc --sourceMap false",
 		"test": "xo && tsc --noEmit",
 		"watch": "tsc --watch"
 	},
