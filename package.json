@@ -14,11 +14,11 @@
 	"repository": "fregante/webext-domain-permission-toggle",
 	"license": "MIT",
 	"author": "Federico Brigante <opensource@bfred.it> (bfred.it)",
+	"module": "index.js",
 	"files": [
 		"index.js",
 		"index.d.ts"
 	],
-	"module": "index.js",
 	"scripts": {
 		"build": "tsc",
 		"prepack": "tsc --sourceMap false",
