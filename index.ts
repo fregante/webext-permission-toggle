@@ -58,11 +58,9 @@ function createMenu(): void {
 		],
 
 		// Note: This is completely ignored by Chrome and Safari. Great.
-		// TODO: Read directly from manifest and verify that the requested URL matches
-		documentUrlPatterns: [
-			'http://*/*',
-			'https://*/*'
-		]
+		documentUrlPatterns: chrome.runtime.getManifest()
+			.optional_permissions! // TODO: Throw explicit error instead of !
+			.filter(permission => permission.includes('*'))
 	});
 }
 
@@ -89,6 +87,7 @@ function updateItem({tabId}: {tabId: number}): void {
 }
 
 async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<void> {
+
 	// Don't use non-ASCII characters because Safari breaks the encoding in executeScript.code
 	const safariError = 'The browser didn\'t supply any information about the active tab.';
 	if (!tab.url && toggle) {
@@ -99,6 +98,7 @@ async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<
 		throw new Error(`Couldn't disable the extension on the current tab. ${safariError}`);
 	}
 
+	// TODO: Ensure that URL is in `optional_permissions`
 	const permissionData = {
 		origins: [
 			new URL(tab.url!).origin + '/*'
