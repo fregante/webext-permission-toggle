@@ -17,11 +17,15 @@ interface Options {
 	reloadOnSuccess?: string | boolean;
 }
 
-// @ts-expect-error
-async function p<T>(fn, ...args): Promise<T> {
+async function p<T>(namespace: string, function_: string, ...args: any[]): Promise<T> {
+	if (window.browser) {
+		// @ts-expect-error
+		return browser[namespace][function_](...args);
+	}
+
 	return new Promise((resolve, reject) => {
 		// @ts-expect-error
-		fn(...args, result => {
+		chrome[namespace][function_](...args, result => {
 			if (chrome.runtime.lastError) {
 				reject(chrome.runtime.lastError);
 			} else {
@@ -32,13 +36,13 @@ async function p<T>(fn, ...args): Promise<T> {
 }
 
 async function executeCode(tabId: number, function_: string | ((...args: any[]) => void), ...args: any[]): Promise<any[]> {
-	return p(chrome.tabs.executeScript.bind(chrome.tabs), tabId, {
+	return p('tabs', 'executeScript', tabId, {
 		code: `(${function_.toString()})(...${JSON.stringify(args)})`
 	});
 }
 
 async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
-	return p(chrome.permissions.contains.bind(chrome.permissions), {
+	return p('permissions', 'contains', {
 		origins: [
 			origin + '/*'
 		]
@@ -106,10 +110,10 @@ async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<
 	};
 
 	if (!toggle) {
-		return p(chrome.permissions.remove.bind(chrome.permissions), permissionData);
+		return p('permissions', 'remove', permissionData);
 	}
 
-	const userAccepted = await p(chrome.permissions.request.bind(chrome.permissions), permissionData);
+	const userAccepted = await p('permissions', 'request', permissionData);
 	if (!userAccepted) {
 		chrome.contextMenus.update(contextMenuId, {
 			checked: false
