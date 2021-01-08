@@ -31,6 +31,12 @@ async function p<T>(fn, ...args): Promise<T> {
 	});
 }
 
+async function executeCode(tabId: number, function_: string | ((...args: any[]) => void), ...args: any[]): Promise<any[]> {
+	return p(chrome.tabs.executeScript, tabId, {
+		code: `(${function_.toString()})(...${JSON.stringify(args)})`
+	});
+}
+
 async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 	return p(chrome.permissions.contains, {
 		origins: [
@@ -50,6 +56,9 @@ function createMenu(): void {
 			'page_action',
 			'browser_action'
 		],
+
+		// Note: This is completely ignored by Chrome and Safari. Great.
+		// TODO: Read directly from manifest and verify that the requested URL matches
 		documentUrlPatterns: [
 			'http://*/*',
 			'https://*/*'
@@ -79,35 +88,50 @@ function updateItem({tabId}: {tabId: number}): void {
 	});
 }
 
-async function handleClick({wasChecked, menuItemId}: chrome.contextMenus.OnClickData, tab?: chrome.tabs.Tab): Promise<void> {
-	if (menuItemId !== contextMenuId || !tab) {
+async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<void> {
+	const permissionData = {
+		origins: [
+			new URL(tab.url!).origin + '/*'
+		]
+	};
+
+	if (!toggle) {
+		return p(chrome.permissions.remove, permissionData);
+	}
+
+	const userAccepted = await p(chrome.permissions.request, permissionData);
+	if (!userAccepted) {
+		chrome.contextMenus.update(contextMenuId, {
+			checked: false
+		});
+		return;
+	}
+
+	if (globalOptions.reloadOnSuccess) {
+		void executeCode(tab.id!, (message: string) => {
+			if (confirm(message)) {
+				location.reload();
+			}
+		}, globalOptions.reloadOnSuccess);
+	}
+}
+
+async function handleClick({checked, menuItemId}: chrome.contextMenus.OnClickData, tab?: chrome.tabs.Tab): Promise<void> {
+	if (menuItemId !== contextMenuId) {
 		return;
 	}
 
 	try {
-		const successful = await p(wasChecked ? chrome.permissions.remove : chrome.permissions.request, {
-			origins: [
-				new URL(tab.url!).origin + '/*'
-			]
-		});
-
-		if (wasChecked && successful) {
-			chrome.contextMenus.update(contextMenuId, {
-				checked: false
-			});
-		}
-
-		if (!wasChecked && successful && globalOptions.reloadOnSuccess) {
-			// Firefox doesn't support `confirm()` from the background page.
-			// JSON.stringify escapes the string to avoid self-XSS
-			chrome.tabs.executeScript({
-				code: `confirm(${JSON.stringify(globalOptions.reloadOnSuccess)}) && location.reload()`
-			});
-		}
+		await togglePermission(tab!, checked!);
 	} catch (error) {
-		console.error(error.message);
-		alert(`Error: ${error.message}`);
-		updateItem({tabId: tab.id!});
+		if (tab?.id) {
+			executeCode(tab.id, 'alert' /* Can't pass a raw native function */, String(error)).catch(() => {
+				alert(error); // One last attempt
+			});
+			updateItem({tabId: tab.id});
+		}
+
+		throw error;
 	}
 }
 
