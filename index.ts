@@ -32,13 +32,13 @@ async function p<T>(fn, ...args): Promise<T> {
 }
 
 async function executeCode(tabId: number, function_: string | ((...args: any[]) => void), ...args: any[]): Promise<any[]> {
-	return p(chrome.tabs.executeScript, tabId, {
+	return p(chrome.tabs.executeScript.bind(chrome.tabs), tabId, {
 		code: `(${function_.toString()})(...${JSON.stringify(args)})`
 	});
 }
 
 async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
-	return p(chrome.permissions.contains, {
+	return p(chrome.permissions.contains.bind(chrome.permissions), {
 		origins: [
 			origin + '/*'
 		]
@@ -89,6 +89,16 @@ function updateItem({tabId}: {tabId: number}): void {
 }
 
 async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<void> {
+	// Don't use non-ASCII characters because Safari breaks the encoding in executeScript.code
+	const safariError = 'The browser didn\'t supply any information about the active tab.';
+	if (!tab.url && toggle) {
+		throw new Error(`Please try again. ${safariError}`);
+	}
+
+	if (!tab.url && !toggle) {
+		throw new Error(`Couldn't disable the extension on the current tab. ${safariError}`);
+	}
+
 	const permissionData = {
 		origins: [
 			new URL(tab.url!).origin + '/*'
@@ -96,10 +106,10 @@ async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<
 	};
 
 	if (!toggle) {
-		return p(chrome.permissions.remove, permissionData);
+		return p(chrome.permissions.remove.bind(chrome.permissions), permissionData);
 	}
 
-	const userAccepted = await p(chrome.permissions.request, permissionData);
+	const userAccepted = await p(chrome.permissions.request.bind(chrome.permissions), permissionData);
 	if (!userAccepted) {
 		chrome.contextMenus.update(contextMenuId, {
 			checked: false
