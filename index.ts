@@ -87,7 +87,6 @@ function updateItem({tabId}: {tabId: number}): void {
 }
 
 async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<void> {
-
 	// Don't use non-ASCII characters because Safari breaks the encoding in executeScript.code
 	const safariError = 'The browser didn\'t supply any information about the active tab.';
 	if (!tab.url && toggle) {
