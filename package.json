@@ -14,6 +14,8 @@
 	"repository": "fregante/webext-domain-permission-toggle",
 	"license": "MIT",
 	"author": "Federico Brigante <opensource@bfred.it> (bfred.it)",
+	"type": "module",
+	"main": "index.js",
 	"module": "index.js",
 	"files": [
 		"index.js",
@@ -37,7 +39,7 @@
 		}
 	},
 	"dependencies": {
-		"webext-additional-permissions": "^1.1.0",
+		"webext-additional-permissions": "^2.0.0",
 		"webext-polyfill-kinda": "^0.0.1"
 	},
 	"devDependencies": {
