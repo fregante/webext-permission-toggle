@@ -1,6 +1,6 @@
 {
 	"name": "webext-domain-permission-toggle",
-	"version": "1.1.0",
+	"version": "2.0.0",
 	"description": "Browser-action context menu to request permission for the current tab. Chrome, Firefox, Safari.",
 	"keywords": [
 		"browser",
