@@ -132,7 +132,7 @@ async function handleClick(
 			executeCode(
 				tab.id,
 				'alert' /* Can't pass a raw native function */,
-				String(error)
+				String(error instanceof Error ? error : new Error(error.message))
 			).catch(() => {
 				alert(error); // One last attempt
 			});

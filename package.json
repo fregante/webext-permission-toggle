@@ -40,7 +40,7 @@
 	},
 	"dependencies": {
 		"webext-additional-permissions": "^2.0.0",
-		"webext-polyfill-kinda": "^0.0.1"
+		"webext-polyfill-kinda": "^0.0.2"
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^0.8.0",
