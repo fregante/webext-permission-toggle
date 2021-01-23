@@ -37,7 +37,8 @@
 		}
 	},
 	"dependencies": {
-		"webext-additional-permissions": "^1.1.0"
+		"webext-additional-permissions": "^1.1.0",
+		"webext-polyfill-kinda": "^0.0.1"
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^0.8.0",

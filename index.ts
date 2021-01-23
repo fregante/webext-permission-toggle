@@ -1,3 +1,4 @@
+import chromeP from 'webext-polyfill-kinda';
 import {getManifestPermissions} from 'webext-additional-permissions';
 
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
@@ -17,32 +18,14 @@ interface Options {
 	reloadOnSuccess?: string | boolean;
 }
 
-async function p<T>(namespace: string, function_: string, ...args: any[]): Promise<T> {
-	if (window.browser) {
-		// @ts-expect-error
-		return browser[namespace][function_](...args);
-	}
-
-	return new Promise((resolve, reject) => {
-		// @ts-expect-error
-		chrome[namespace][function_](...args, result => {
-			if (chrome.runtime.lastError) {
-				reject(chrome.runtime.lastError);
-			} else {
-				resolve(result);
-			}
-		});
-	});
-}
-
 async function executeCode(tabId: number, function_: string | ((...args: any[]) => void), ...args: any[]): Promise<any[]> {
-	return p('tabs', 'executeScript', tabId, {
+	return chromeP.tabs.executeScript(tabId, {
 		code: `(${function_.toString()})(...${JSON.stringify(args)})`
 	});
 }
 
 async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
-	return p('permissions', 'contains', {
+	return chromeP.permissions.contains({
 		origins: [
 			origin + '/*'
 		]
@@ -110,10 +93,11 @@ async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<
 	};
 
 	if (!toggle) {
-		return p('permissions', 'remove', permissionData);
+		void chromeP.permissions.remove(permissionData);
+		return;
 	}
 
-	const userAccepted = await p('permissions', 'request', permissionData);
+	const userAccepted = await chromeP.permissions.request(permissionData);
 	if (!userAccepted) {
 		chrome.contextMenus.update(contextMenuId, {
 			checked: false
