@@ -18,7 +18,11 @@ interface Options {
 	reloadOnSuccess?: string | boolean;
 }
 
-async function executeCode(tabId: number, function_: string | ((...args: any[]) => void), ...args: any[]): Promise<any[]> {
+async function executeCode(
+	tabId: number,
+	function_: string | ((...args: any[]) => void),
+	...args: any[]
+): Promise<any[]> {
 	return chromeP.tabs.executeScript(tabId, {
 		code: `(${function_.toString()})(...${JSON.stringify(args)})`
 	});
@@ -26,9 +30,7 @@ async function executeCode(tabId: number, function_: string | ((...args: any[]) 
 
 async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 	return chromeP.permissions.contains({
-		origins: [
-			origin + '/*'
-		]
+		origins: [origin + '/*']
 	});
 }
 
@@ -39,10 +41,7 @@ function createMenu(): void {
 		type: 'checkbox',
 		checked: false,
 		title: globalOptions.title,
-		contexts: [
-			'page_action',
-			'browser_action'
-		],
+		contexts: ['page_action', 'browser_action'],
 
 		// Note: This is completely ignored by Chrome and Safari. Great.
 		// TODO: Read directly from manifest and verify that the requested URL matches
@@ -114,7 +113,10 @@ async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<
 	}
 }
 
-async function handleClick({checked, menuItemId}: chrome.contextMenus.OnClickData, tab?: chrome.tabs.Tab): Promise<void> {
+async function handleClick(
+	{checked, menuItemId}: chrome.contextMenus.OnClickData,
+	tab?: chrome.tabs.Tab
+): Promise<void> {
 	if (menuItemId !== contextMenuId) {
 		return;
 	}
@@ -123,7 +125,11 @@ async function handleClick({checked, menuItemId}: chrome.contextMenus.OnClickDat
 		await togglePermission(tab!, checked!);
 	} catch (error) {
 		if (tab?.id) {
-			executeCode(tab.id, 'alert' /* Can't pass a raw native function */, String(error)).catch(() => {
+			executeCode(
+				tab.id,
+				'alert' /* Can't pass a raw native function */,
+				String(error)
+			).catch(() => {
 				alert(error); // One last attempt
 			});
 			updateItem({tabId: tab.id});
@@ -146,8 +152,11 @@ export default function addDomainPermissionToggle(options?: Options): void {
 	}
 
 	const {name} = chrome.runtime.getManifest();
-	globalOptions = {title: `Enable ${name} on this domain`,
-		reloadOnSuccess: `Do you want to reload this page to apply ${name}?`, ...options};
+	globalOptions = {
+		title: `Enable ${name} on this domain`,
+		reloadOnSuccess: `Do you want to reload this page to apply ${name}?`,
+		...options
+	};
 
 	chrome.contextMenus.onClicked.addListener(handleClick);
 	chrome.tabs.onActivated.addListener(updateItem);
