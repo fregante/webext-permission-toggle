@@ -38,8 +38,8 @@ function createMenu(): void {
 	const optionalHosts = chrome.runtime.getManifest()
 		.optional_permissions
 		?.filter(permission => permission.includes('*') || permission === '<all_urls>');
-	if (!optionalHosts || optionalHosts.length == 0) {
-		throw new TypeError('The manifest doesn’t specify any hosts in `optional_permissions`')
+	if (!optionalHosts || optionalHosts.length === 0) {
+		throw new TypeError('The manifest doesn’t specify any hosts in `optional_permissions`');
 	}
 
 	chrome.contextMenus.remove(contextMenuId, () => chrome.runtime.lastError);
