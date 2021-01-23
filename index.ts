@@ -35,6 +35,13 @@ async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 }
 
 function createMenu(): void {
+	const optionalHosts = chrome.runtime.getManifest()
+		.optional_permissions
+		?.filter(permission => permission.includes('*') || permission === '<all_urls>');
+	if (!optionalHosts || optionalHosts.length == 0) {
+		throw new TypeError('The manifest doesn’t specify any hosts in `optional_permissions`')
+	}
+
 	chrome.contextMenus.remove(contextMenuId, () => chrome.runtime.lastError);
 	chrome.contextMenus.create({
 		id: contextMenuId,
@@ -44,9 +51,7 @@ function createMenu(): void {
 		contexts: ['page_action', 'browser_action'],
 
 		// Note: This is completely ignored by Chrome and Safari. Great.
-		documentUrlPatterns: chrome.runtime.getManifest()
-			.optional_permissions! // TODO: Throw explicit error instead of !
-			.filter(permission => permission.includes('*'))
+		documentUrlPatterns: optionalHosts
 	});
 }
 
