@@ -1,3 +1,4 @@
+import chromeP from 'webext-polyfill-kinda';
 import {getManifestPermissions} from 'webext-additional-permissions';
 
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
@@ -17,31 +18,19 @@ interface Options {
 	reloadOnSuccess?: string | boolean;
 }
 
-// @ts-expect-error
-async function p<T>(fn, ...args): Promise<T> {
-	return new Promise((resolve, reject) => {
-		// @ts-expect-error
-		fn(...args, result => {
-			if (chrome.runtime.lastError) {
-				reject(chrome.runtime.lastError);
-			} else {
-				resolve(result);
-			}
-		});
-	});
-}
-
-async function executeCode(tabId: number, function_: string | ((...args: any[]) => void), ...args: any[]): Promise<any[]> {
-	return p(chrome.tabs.executeScript, tabId, {
+async function executeCode(
+	tabId: number,
+	function_: string | ((...args: any[]) => void),
+	...args: any[]
+): Promise<any[]> {
+	return chromeP.tabs.executeScript(tabId, {
 		code: `(${function_.toString()})(...${JSON.stringify(args)})`
 	});
 }
 
 async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
-	return p(chrome.permissions.contains, {
-		origins: [
-			origin + '/*'
-		]
+	return chromeP.permissions.contains({
+		origins: [origin + '/*']
 	});
 }
 
@@ -52,10 +41,7 @@ function createMenu(): void {
 		type: 'checkbox',
 		checked: false,
 		title: globalOptions.title,
-		contexts: [
-			'page_action',
-			'browser_action'
-		],
+		contexts: ['page_action', 'browser_action'],
 
 		// Note: This is completely ignored by Chrome and Safari. Great.
 		documentUrlPatterns: chrome.runtime.getManifest()
@@ -105,10 +91,11 @@ async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<
 	};
 
 	if (!toggle) {
-		return p(chrome.permissions.remove.bind(chrome.permissions), permissionData);
+		void chromeP.permissions.remove(permissionData);
+		return;
 	}
 
-	const userAccepted = await p(chrome.permissions.request.bind(chrome.permissions), permissionData);
+	const userAccepted = await chromeP.permissions.request(permissionData);
 	if (!userAccepted) {
 		chrome.contextMenus.update(contextMenuId, {
 			checked: false
@@ -125,7 +112,10 @@ async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<
 	}
 }
 
-async function handleClick({checked, menuItemId}: chrome.contextMenus.OnClickData, tab?: chrome.tabs.Tab): Promise<void> {
+async function handleClick(
+	{checked, menuItemId}: chrome.contextMenus.OnClickData,
+	tab?: chrome.tabs.Tab
+): Promise<void> {
 	if (menuItemId !== contextMenuId) {
 		return;
 	}
@@ -134,7 +124,11 @@ async function handleClick({checked, menuItemId}: chrome.contextMenus.OnClickDat
 		await togglePermission(tab!, checked!);
 	} catch (error) {
 		if (tab?.id) {
-			executeCode(tab.id, 'alert' /* Can't pass a raw native function */, String(error)).catch(() => {
+			executeCode(
+				tab.id,
+				'alert' /* Can't pass a raw native function */,
+				String(error)
+			).catch(() => {
 				alert(error); // One last attempt
 			});
 			updateItem({tabId: tab.id});
@@ -157,8 +151,11 @@ export default function addDomainPermissionToggle(options?: Options): void {
 	}
 
 	const {name} = chrome.runtime.getManifest();
-	globalOptions = {title: `Enable ${name} on this domain`,
-		reloadOnSuccess: `Do you want to reload this page to apply ${name}?`, ...options};
+	globalOptions = {
+		title: `Enable ${name} on this domain`,
+		reloadOnSuccess: `Do you want to reload this page to apply ${name}?`,
+		...options
+	};
 
 	chrome.contextMenus.onClicked.addListener(handleClick);
 	chrome.tabs.onActivated.addListener(updateItem);

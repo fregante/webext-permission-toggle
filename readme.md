@@ -97,4 +97,4 @@ If the user accepts the new permission, they will be asked to reload the current
 
 ## License
 
-MIT © [Federico Brigante](https://bfred.it)
+MIT © [Federico Brigante](https://fregante.com)
