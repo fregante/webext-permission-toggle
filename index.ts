@@ -35,6 +35,13 @@ async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 }
 
 function createMenu(): void {
+	const optionalHosts = chrome.runtime.getManifest()
+		.optional_permissions
+		?.filter(permission => permission.includes('*') || permission === '<all_urls>');
+	if (!optionalHosts || optionalHosts.length === 0) {
+		throw new TypeError('Only permissions specified in the manifest may be requested. The manifest doesn’t specify any hosts in `optional_permissions`');
+	}
+
 	chrome.contextMenus.remove(contextMenuId, () => chrome.runtime.lastError);
 	chrome.contextMenus.create({
 		id: contextMenuId,
@@ -44,11 +51,7 @@ function createMenu(): void {
 		contexts: ['page_action', 'browser_action'],
 
 		// Note: This is completely ignored by Chrome and Safari. Great.
-		// TODO: Read directly from manifest and verify that the requested URL matches
-		documentUrlPatterns: [
-			'http://*/*',
-			'https://*/*'
-		]
+		documentUrlPatterns: optionalHosts
 	});
 }
 
@@ -85,6 +88,7 @@ async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<
 		throw new Error(`Couldn't disable the extension on the current tab. ${safariError}`);
 	}
 
+	// TODO: Ensure that URL is in `optional_permissions`
 	const permissionData = {
 		origins: [
 			new URL(tab.url!).origin + '/*'

@@ -37,8 +37,7 @@ addDomainPermissionToggle();
 		"activeTab"
 	],
 	"optional_permissions": [
-		"http://*/*",
-		"https://*/*"
+		"*://*/*"
 	],
 	"background": {
 		"scripts": [
