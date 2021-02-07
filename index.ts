@@ -1,5 +1,6 @@
 import chromeP from 'webext-polyfill-kinda';
 import {patternToRegex} from 'webext-patterns';
+import {isBackgroundPage} from 'webext-detect-page';
 import {getManifestPermissions} from 'webext-additional-permissions';
 
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
@@ -32,27 +33,6 @@ async function executeCode(
 async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 	return chromeP.permissions.contains({
 		origins: [origin + '/*']
-	});
-}
-
-function createMenu(): void {
-	const optionalHosts = chrome.runtime.getManifest()
-		.optional_permissions
-		?.filter(permission => permission.includes('*') || permission === '<all_urls>');
-	if (!optionalHosts || optionalHosts.length === 0) {
-		throw new TypeError('Only permissions specified in the manifest may be requested. The manifest doesn’t specify any hosts in `optional_permissions`');
-	}
-
-	chrome.contextMenus.remove(contextMenuId, () => chrome.runtime.lastError);
-	chrome.contextMenus.create({
-		id: contextMenuId,
-		type: 'checkbox',
-		checked: false,
-		title: globalOptions.title,
-		contexts: ['page_action', 'browser_action'],
-
-		// Note: This is completely ignored by Chrome and Safari. Great.
-		documentUrlPatterns: optionalHosts
 	});
 }
 
@@ -152,16 +132,41 @@ async function handleClick(
  * @param options {Options}
  */
 export default function addDomainPermissionToggle(options?: Options): void {
+	if (!isBackgroundPage()) {
+		throw new Error('webext-domain-permission-toggle can only be called from a background page');
+	}
+
 	if (globalOptions) {
 		throw new Error('webext-domain-permission-toggle can only be initialized once');
 	}
 
-	const {name} = chrome.runtime.getManifest();
+	const {name, optional_permissions} = chrome.runtime.getManifest();
 	globalOptions = {
 		title: `Enable ${name} on this domain`,
 		reloadOnSuccess: `Do you want to reload this page to apply ${name}?`,
 		...options
 	};
+
+	if (!chrome.contextMenus) {
+		throw new Error('webext-domain-permission-toggle requires the `contextMenu` permission');
+	}
+
+	const optionalHosts = optional_permissions?.filter(permission => /<all_urls>|\*/.test(permission));
+	if (!optionalHosts || optionalHosts.length === 0) {
+		throw new TypeError('webext-domain-permission-toggle some wildcard hosts to be specified in `optional_permissions`');
+	}
+
+	chrome.contextMenus.remove(contextMenuId, () => chrome.runtime.lastError);
+	chrome.contextMenus.create({
+		id: contextMenuId,
+		type: 'checkbox',
+		checked: false,
+		title: globalOptions.title,
+		contexts: ['page_action', 'browser_action'],
+
+		// Note: This is completely ignored by Chrome and Safari. Great. #14
+		documentUrlPatterns: optionalHosts
+	});
 
 	chrome.contextMenus.onClicked.addListener(handleClick);
 	chrome.tabs.onActivated.addListener(updateItem);
@@ -171,5 +176,4 @@ export default function addDomainPermissionToggle(options?: Options): void {
 		}
 	});
 
-	createMenu();
 }
