@@ -110,14 +110,19 @@ async function handleClick(
 		await togglePermission(tab!, checked!);
 	} catch (error) {
 		if (tab?.id) {
-			executeCode(
-				tab.id,
-				'alert' /* Can't pass a raw native function */,
-				String(error instanceof Error ? error : new Error(error.message))
-			).catch(() => {
+			try {
+				await executeCode(
+					tab.id,
+					'alert' /* Can't pass a raw native function */,
+
+					// https://github.com/mozilla/webextension-polyfill/pull/258
+					String(error instanceof Error ? error : new Error(error.message))
+				);
+			} catch {
 				alert(error); // One last attempt
-			});
-			updateItem({tabId: tab.id});
+			}
+
+			void updateItem({tabId: tab.id});
 		}
 
 		throw error;
@@ -175,5 +180,4 @@ export default function addDomainPermissionToggle(options?: Options): void {
 			updateItem({tabId});
 		}
 	});
-
 }
