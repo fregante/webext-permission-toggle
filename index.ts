@@ -1,10 +1,11 @@
 import chromeP from 'webext-polyfill-kinda';
 import {patternToRegex} from 'webext-patterns';
 import {isBackgroundPage} from 'webext-detect-page';
-import {getManifestPermissions} from 'webext-additional-permissions';
+import {getManifestPermissionsSync} from 'webext-additional-permissions';
+
+const isFirefox = typeof navigator === 'object' && navigator.userAgent.includes('Firefox/');
 
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
-let currentTabId: number;
 let globalOptions: Options;
 
 interface Options {
@@ -36,26 +37,36 @@ async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 	});
 }
 
-function updateItem({tabId}: {tabId: number}): void {
-	chrome.tabs.executeScript(tabId, {
-		code: 'location.origin'
-	}, async ([origin] = []) => {
-		const settings = {
-			checked: false,
-			enabled: true
-		};
-		if (!chrome.runtime.lastError && origin) {
-			// Manifest permissions can't be removed; this disables the toggle on those domains
-			const manifestPermissions = await getManifestPermissions();
-			const isDefault = patternToRegex(...manifestPermissions.origins).test(origin);
-			settings.enabled = !isDefault;
+async function getTabUrl(tabId: number): Promise<string | undefined> {
+	// In Firefox, inexplicably, `Tab` does not have the URL property, even if you have access to the origin. They *require* the `tabs` permission for this.
+	if (isFirefox) {
+		const [url] = await executeCode(tabId, () => location.href);
+		return url;
+	}
 
-			// We might have temporary permission as part of `activeTab`, so it needs to be properly checked
-			settings.checked = isDefault || await isOriginPermanentlyAllowed(origin);
-		}
+	const tab = await chromeP.tabs.get(tabId);
+	return tab.url;
+}
 
-		chrome.contextMenus.update(contextMenuId, settings);
-	});
+async function updateItem(url?: string): Promise<void> {
+	const settings = {
+		checked: false,
+		enabled: true
+	};
+
+	// No URL means no activeTab, no manifest permission, no granted permission, or no permission possible (chrome://)
+	if (url) {
+		const origin = new URL(url).origin;
+		// Manifest permissions can't be removed; this disables the toggle on those domains
+		const manifestPermissions = getManifestPermissionsSync();
+		const isDefault = patternToRegex(...manifestPermissions.origins).test(origin);
+		settings.enabled = !isDefault;
+
+		// We might have temporary permission as part of `activeTab`, so it needs to be properly checked
+		settings.checked = isDefault || await isOriginPermanentlyAllowed(origin);
+	}
+
+	chrome.contextMenus.update(contextMenuId, settings);
 }
 
 async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<void> {
@@ -98,6 +109,10 @@ async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<
 	}
 }
 
+async function handleTabActivated({tabId}: chrome.tabs.TabActiveInfo): Promise<void> {
+	void updateItem(await getTabUrl(tabId).catch(() => ''));
+}
+
 async function handleClick(
 	{checked, menuItemId}: chrome.contextMenus.OnClickData,
 	tab?: chrome.tabs.Tab
@@ -122,7 +137,7 @@ async function handleClick(
 				alert(error); // One last attempt
 			}
 
-			void updateItem({tabId: tab.id});
+			void updateItem();
 		}
 
 		throw error;
@@ -174,10 +189,10 @@ export default function addDomainPermissionToggle(options?: Options): void {
 	});
 
 	chrome.contextMenus.onClicked.addListener(handleClick);
-	chrome.tabs.onActivated.addListener(updateItem);
-	chrome.tabs.onUpdated.addListener((tabId, {status}) => {
-		if (currentTabId === tabId && status === 'complete') {
-			updateItem({tabId});
+	chrome.tabs.onActivated.addListener(handleTabActivated);
+	chrome.tabs.onUpdated.addListener(async (tabId, {status}, {url, active}) => {
+		if (active && status === 'complete') {
+			void updateItem(url ?? await getTabUrl(tabId).catch(() => ''));
 		}
 	});
 }
