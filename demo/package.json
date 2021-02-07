@@ -1,0 +1,16 @@
+{
+	"private": true,
+	"description": "This needs to be a separate file or else parcel tries to read the `main` fields of the module",
+	"scripts": {
+		"build": "parcel build manifest.json --no-cache",
+		"watch": "parcel watch manifest.json --no-cache"
+	},
+	"devDependencies": {
+		"@parcel/config-webextension": "^2.0.0-nightly.2198",
+		"@parcel/transformer-webextension": "^2.0.0-nightly.2198",
+		"parcel": "^2.0.0-nightly.574"
+	},
+	"webExt": {
+		"sourceDir": "dist"
+	}
+}

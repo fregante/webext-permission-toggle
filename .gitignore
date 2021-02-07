@@ -10,3 +10,6 @@ logs
 *.map
 index.js
 index.d.ts
+dist
+.parcel-cache
+demo/package-lock.json
