@@ -1,4 +1,5 @@
 import chromeP from 'webext-polyfill-kinda';
+import {patternToRegex} from 'webext-patterns';
 import {getManifestPermissions} from 'webext-additional-permissions';
 
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
@@ -66,7 +67,7 @@ function updateItem({tabId}: {tabId: number}): void {
 		if (!chrome.runtime.lastError && origin) {
 			// Manifest permissions can't be removed; this disables the toggle on those domains
 			const manifestPermissions = await getManifestPermissions();
-			const isDefault = manifestPermissions.origins.some(permission => permission.startsWith(origin));
+			const isDefault = patternToRegex(...manifestPermissions.origins).test(origin);
 			settings.enabled = !isDefault;
 
 			// We might have temporary permission as part of `activeTab`, so it needs to be properly checked

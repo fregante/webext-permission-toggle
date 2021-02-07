@@ -43,6 +43,7 @@
 	},
 	"dependencies": {
 		"webext-additional-permissions": "^2.0.0",
+		"webext-patterns": "^1.0.0",
 		"webext-polyfill-kinda": "^0.0.2"
 	},
 	"devDependencies": {
