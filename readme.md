@@ -8,7 +8,9 @@ Works great when paired with [webext-dynamic-content-scripts](https://github.com
 
 ## Install
 
-You can just download the [standalone bundle](https://packd.fregante.now.sh/webext-domain-permission-toggle@latest?name=addDomainPermissionToggle) (it might take a minute to download) and include the file in your `manifest.json`, or:
+You can download the [standalone bundle](https://bundle.fregante.com/?pkg=webext-domain-permission-toggle&global=addDomainPermissionToggle) and include it in your `manifest.json`.
+
+Or use `npm`:
 
 ```sh
 npm install webext-domain-permission-toggle
