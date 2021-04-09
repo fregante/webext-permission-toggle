@@ -3,8 +3,9 @@ html {
 	letter-spacing: 0.01em;
 }
 body {
-	width: 500px;
+	width: 480px;
 	margin: 20px auto;
+	padding: 20px;
 	background: linear-gradient(#eee, #fff) no-repeat;
 	background-size: 100% 100px;
 }
@@ -109,6 +110,7 @@ ol li:before {
 
 .menu {
 	width: max-content;
+    max-width: 300px;
 	position: relative;
 	z-index: 1;
 	background-color: white;
