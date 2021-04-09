@@ -11,10 +11,7 @@
 		</h1>
 		<ol>
 			<li>Right-click on the extension’s toolbar icon</li>
-			<li>
-				Click on
-				<em>"Enable <span class="extname">&lt;My Extension&gt;</span> on this domain"</em>
-			</li>
+			<li>Click on <em>"Enable <span class="extname">&lt;My Extension&gt;</span> on this domain"</em></li>
 			<li>Accept the new permissions</li>
 			<li>Done! It should look like this:</li>
 		</ol>
@@ -61,7 +58,7 @@
 				Feature added with the <a href="https://github.com/fregante/webext-domain-permission-toggle">webext-domain-permission-toggle</a> module by <a href="https://fregante.com">@fregante</a>. Guide icons by <a href="https://chromium.googlesource.com/chromium/src/+/lkgr/ui/webui/resources/images">Google</a> and <a
 					href="https://www.flaticon.com/authors/pongsakornred"
 					title="pongsakornRed"
-					rel="nofollow">pongsakornRed</a>.
+					rel="nofollow">pongsakornRed</a>. You can also <a href="#customize">customize this page</a> for your extension if it uses the same module.
 			</p>
 		</footer>
 		<script>
@@ -84,6 +81,20 @@
 
 				image.src = icon;
 			}
+			document.querySelector('[href="#customize"]').addEventListener('click', e => {
+				e.preventDefault();
+				const name = prompt('Enter your extension’s name');
+				if (!name) {
+					return;
+				}
+
+				const icon = prompt('Enter a full, public link to your extension’s icon');
+				if (!icon) {
+					return;
+				}
+
+				location.search = '?' + new URLSearchParams({name, icon});
+			})
 		</script>
 	</body>
 </html>
