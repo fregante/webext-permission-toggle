@@ -6,6 +6,8 @@
 
 Works great when paired with [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts/blob/master/how-to-add-github-enterprise-support-to-web-extensions.md) if you want to also inject content scripts on the new domains.
 
+This repository even includes a [customizable guide](https://fregante.github.io/webext-domain-permission-toggle/) to tell your users how to use it. At the bottom of that page, you'll find a link that lets you customize it with your extension’s name and icon. You can link your users to it directly, it's a permalink.
+
 ## Install
 
 You can download the [standalone bundle](https://bundle.fregante.com/?pkg=webext-domain-permission-toggle&global=addDomainPermissionToggle) and include it in your `manifest.json`.
