@@ -1,63 +1,89 @@
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="style.css">
-    <meta name="viewport" content="width=500px">
-    <title>How to enable this extension on another domain</title>
-</head>
-<body>
-    <h1>How to enable <span class="extname">this extension</span> on another domain</h1>
-    <ol>
-        <li>Right-click on the extension’s toolbar icon
-        <li>Click on <em>"Enable &lt;<span class="extname">My Extension</span>&gt; on this domain"</em>
-        <li>Accept the new permissions
-        <li>Done! It should look like this:
-    </ol>
-    <div class="dream">
-        <div class="window">
-            <div class="titlebar"></div>
-            <div class="toolbar">
-                <div class="urlbar">
-                    <div class="star"></div>
-                </div>
-                <div class="button-group">
-                    <div class="button focused">
-                        <img src="userext.svg" alt="">
-                    </div>
-                    <div class="button">
-                        <img src="exts.svg" alt="">
-                    </div>
-                </div>
-                <div class="button">
-                    <img src="user.svg" alt="">
-                </div>
-                <div class="button">
-                    <img src="i-wood-laik-too-bie-a-hambagga.svg" alt="">
-                </div>
-            </div>
-            <div class="menu">
-                <div class="menuitem"><span class="extname">My Extension</span></div>
-                <div class="separator"></div>
-                <div class="menuitem focused">Enable <span class="extname">My Extension</span> on this domain</div>
-                <div class="separator"></div>
-                <div class="menuitem">Options</div>
-                <div class="menuitem">Remove from Chrome…</div>
-                <div class="menuitem">Unpin</div>
-                <div class="separator"></div>
-                <div class="menuitem">Manage Extensions</div>
-            </div>
-        </div>
-    </div>
-    <footer>
-        <p>Feature added with the <a href="https://github.com/fregante/webext-domain-permission-toggle">webext-domain-permission-toggle</a> module by <a href="https://fregante.com">@fregante</a>. Guide icons by <a href="https://chromium.googlesource.com/chromium/src/+/lkgr/ui/webui/resources/images">Google</a> and <a href="https://www.flaticon.com/authors/pongsakornred" title="pongsakornRed" rel="nofollow">pongsakornRed</a>.</p>
-    </footer>
-    <script>
-        const name = new URLSearchParams(location.search).get('name');
-        if (name) {
-            for (const element of document.querySelectorAll('.extname')) {
-                element.textContent = name;
-            }
-        }
-    </script>
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="stylesheet" href="style.css" />
+		<meta name="viewport" content="width=500px" />
+		<title>How to enable this extension on another domain</title>
+	</head>
+	<body>
+		<h1>
+			How to enable <span class="extname">this extension</span> on another domain
+		</h1>
+		<ol>
+			<li>Right-click on the extension’s toolbar icon</li>
+			<li>
+				Click on
+				<em>"Enable <span class="extname">&lt;My Extension&gt;</span> on this domain"</em>
+			</li>
+			<li>Accept the new permissions</li>
+			<li>Done! It should look like this:</li>
+		</ol>
+
+		<div class="dream">
+			<div class="window">
+				<div class="titlebar"></div>
+				<div class="toolbar">
+					<div class="urlbar">
+						<div class="star"></div>
+					</div>
+					<div class="button-group">
+						<div class="button focused">
+							<img src="userext.svg" width="14" height="14" alt="" />
+						</div>
+						<div class="button">
+							<img src="exts.svg" alt="" />
+						</div>
+					</div>
+					<div class="button">
+						<img src="user.svg" alt="" />
+					</div>
+					<div class="button">
+						<img src="i-wood-laik-too-bie-a-hambagga.svg" alt="" />
+					</div>
+				</div>
+				<div class="menu">
+					<div class="menuitem"><span class="extname">My Extension</span></div>
+					<div class="separator"></div>
+					<div class="menuitem focused">
+						Enable <span class="extname">My Extension</span> on this domain
+					</div>
+					<div class="separator"></div>
+					<div class="menuitem">Options</div>
+					<div class="menuitem">Remove from Chrome…</div>
+					<div class="menuitem">Unpin</div>
+					<div class="separator"></div>
+					<div class="menuitem">Manage Extensions</div>
+				</div>
+			</div>
+		</div>
+		<footer>
+			<p>
+				Feature added with the <a href="https://github.com/fregante/webext-domain-permission-toggle">webext-domain-permission-toggle</a> module by <a href="https://fregante.com">@fregante</a>. Guide icons by <a href="https://chromium.googlesource.com/chromium/src/+/lkgr/ui/webui/resources/images">Google</a> and <a
+					href="https://www.flaticon.com/authors/pongsakornred"
+					title="pongsakornRed"
+					rel="nofollow">pongsakornRed</a>.
+			</p>
+		</footer>
+		<script>
+			const options = new URLSearchParams(location.search);
+			const name = options.get('name');
+			if (name) {
+				for (const element of document.querySelectorAll('.extname')) {
+					element.textContent = name;
+				}
+			}
+			const icon = options.get('icon');
+			if (icon) {
+				const image = document.querySelector('.button.focused img');
+
+				// Reset it if the image fails loading
+				const defaultUrl = image.src;
+				image.addEventListener('error', () => {
+					image.src = defaultUrl;
+				});
+
+				image.src = icon;
+			}
+		</script>
+	</body>
 </html>
