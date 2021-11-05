@@ -2,8 +2,8 @@ import chromeP from 'webext-polyfill-kinda';
 import {patternToRegex} from 'webext-patterns';
 import {isBackgroundPage} from 'webext-detect-page';
 import {getManifestPermissionsSync} from 'webext-additional-permissions';
-
-const isFirefox = typeof navigator === 'object' && navigator.userAgent.includes('Firefox/');
+import {getTabUrl} from 'webext-tools';
+import {executeFunction} from 'webext-content-scripts';
 
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
 let globalOptions: Options;
@@ -21,31 +21,10 @@ interface Options {
 	reloadOnSuccess?: string | boolean;
 }
 
-async function executeCode(
-	tabId: number,
-	function_: string | ((...args: any[]) => void),
-	...args: any[]
-): Promise<any[]> {
-	return chromeP.tabs.executeScript(tabId, {
-		code: `(${function_.toString()})(...${JSON.stringify(args)})`
-	});
-}
-
 async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 	return chromeP.permissions.contains({
 		origins: [origin + '/*']
 	});
-}
-
-async function getTabUrl(tabId: number): Promise<string | undefined> {
-	// In Firefox, inexplicably, `Tab` does not have the URL property, even if you have access to the origin. They *require* the `tabs` permission for this.
-	if (isFirefox) {
-		const [url] = await executeCode(tabId, () => location.href);
-		return url;
-	}
-
-	const tab = await chromeP.tabs.get(tabId);
-	return tab.url;
 }
 
 async function updateItem(url?: string): Promise<void> {
@@ -101,7 +80,7 @@ async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<
 	}
 
 	if (globalOptions.reloadOnSuccess) {
-		void executeCode(tab.id!, (message: string) => {
+		void executeFunction(tab.id!, (message: string) => {
 			if (confirm(message)) {
 				location.reload();
 			}
@@ -110,7 +89,7 @@ async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<
 }
 
 async function handleTabActivated({tabId}: chrome.tabs.TabActiveInfo): Promise<void> {
-	void updateItem(await getTabUrl(tabId).catch(() => ''));
+	void updateItem(await getTabUrl(tabId) ?? '');
 }
 
 async function handleClick(
@@ -126,7 +105,7 @@ async function handleClick(
 	} catch (error) {
 		if (tab?.id) {
 			try {
-				await executeCode(
+				await executeFunction(
 					tab.id,
 					'alert' /* Can't pass a raw native function */,
 
@@ -192,7 +171,7 @@ export default function addDomainPermissionToggle(options?: Options): void {
 	chrome.tabs.onActivated.addListener(handleTabActivated);
 	chrome.tabs.onUpdated.addListener(async (tabId, {status}, {url, active}) => {
 		if (active && status === 'complete') {
-			void updateItem(url ?? await getTabUrl(tabId).catch(() => ''));
+			void updateItem(url ?? await getTabUrl(tabId) ?? '');
 		}
 	});
 }
