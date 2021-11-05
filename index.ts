@@ -16,7 +16,7 @@ interface Options {
 
 	/**
 	 * If the user accepts the new permission, they will be asked to reload the current tab.
-	 * Set a `string` to customize the message and `false` to avoid the reload and its request.
+	 * Set a `string` to customize the message and `false` (default) to avoid the reload and its request.
 	 */
 	reloadOnSuccess?: string | boolean;
 }

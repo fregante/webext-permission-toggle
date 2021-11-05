@@ -78,9 +78,9 @@ The title of the action in the context menu.
 
 Type: `boolean` `string`
 
-Default: `Do you want to reload this page to apply ${extensionName}?`
+Default: `false`
 
-If the user accepts the new permission, they will be asked to reload the current tab. Set a `string` to customize the message and `false` to avoid the reload and its request.
+If `true` or `string`, when the user accepts the new permission, they will be asked to reload the current tab. Set a `string` to customize the message or `true` use the default message: `Do you want to reload this page to apply ${extensionName}?`
 
 ## Related
 
