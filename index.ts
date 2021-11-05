@@ -149,6 +149,7 @@ export default function addDomainPermissionToggle(options?: Options): void {
 	if (globalOptions.reloadOnSuccess === true) {
 		globalOptions.reloadOnSuccess = `Do you want to reload this page to apply ${name}?`;
 	}
+
 	if (!chrome.contextMenus) {
 		throw new Error('webext-domain-permission-toggle requires the `contextMenu` permission');
 	}

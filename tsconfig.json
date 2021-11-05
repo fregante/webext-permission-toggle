@@ -4,6 +4,7 @@
 		"useUnknownInCatchVariables": false
 	},
 	"files": [
+		"global.d.ts",
 		"index.ts"
 	]
 }

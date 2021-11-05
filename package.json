@@ -25,6 +25,8 @@
 		"index.d.ts"
 	],
 	"scripts": {
+		"demo:build": "parcel build --no-cache",
+		"demo:watch": "parcel watch --no-cache",
 		"build": "tsc",
 		"prepack": "tsc --sourceMap false",
 		"test": "xo && tsc --noEmit",
@@ -50,13 +52,25 @@
 		"webext-tools": "^0.1.0"
 	},
 	"devDependencies": {
+		"@parcel/config-webextension": "^2.0.0",
+		"@parcel/transformer-webextension": "^2.0.0",
 		"@sindresorhus/tsconfig": "^2.0.0",
 		"@types/chrome": "0.0.163",
-		"@types/firefox-webext-browser": "^94.0.0",
+		"@types/webextension-polyfill": "^0.8.1",
+		"parcel": "^2.0.0",
 		"typescript": "^4.4.4",
 		"xo": "^0.46.4"
 	},
+	"targets": {
+		"main": false,
+		"default": {
+			"source": "demo/manifest.json",
+			"sourceMap": {
+				"inline": true
+			}
+		}
+	},
 	"webExt": {
-		"sourceDir": "demo/dist"
+		"sourceDir": "dist"
 	}
 }
