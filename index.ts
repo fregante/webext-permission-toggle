@@ -23,14 +23,14 @@ interface Options {
 
 async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 	return chromeP.permissions.contains({
-		origins: [origin + '/*']
+		origins: [origin + '/*'],
 	});
 }
 
 async function updateItem(url?: string): Promise<void> {
 	const settings = {
 		checked: false,
-		enabled: true
+		enabled: true,
 	};
 
 	// No URL means no activeTab, no manifest permission, no granted permission, or no permission possible (chrome://)
@@ -62,8 +62,8 @@ async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<
 	// TODO: Ensure that URL is in `optional_permissions`
 	const permissionData = {
 		origins: [
-			new URL(tab.url!).origin + '/*'
-		]
+			new URL(tab.url!).origin + '/*',
+		],
 	};
 
 	if (!toggle) {
@@ -74,7 +74,7 @@ async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<
 	const userAccepted = await chromeP.permissions.request(permissionData);
 	if (!userAccepted) {
 		chrome.contextMenus.update(contextMenuId, {
-			checked: false
+			checked: false,
 		});
 		return;
 	}
@@ -94,7 +94,7 @@ async function handleTabActivated({tabId}: chrome.tabs.TabActiveInfo): Promise<v
 
 async function handleClick(
 	{checked, menuItemId}: chrome.contextMenus.OnClickData,
-	tab?: chrome.tabs.Tab
+	tab?: chrome.tabs.Tab,
 ): Promise<void> {
 	if (menuItemId !== contextMenuId) {
 		return;
@@ -110,7 +110,7 @@ async function handleClick(
 					'alert' /* Can't pass a raw native function */,
 
 					// https://github.com/mozilla/webextension-polyfill/pull/258
-					String(error instanceof Error ? error : new Error(error.message))
+					String(error instanceof Error ? error : new Error(error.message)),
 				);
 			} catch {
 				alert(error); // One last attempt
@@ -139,18 +139,18 @@ export default function addDomainPermissionToggle(options?: Options): void {
 		throw new Error('webext-domain-permission-toggle can only be initialized once');
 	}
 
-	const {name, optional_permissions} = chrome.runtime.getManifest();
+	const {name, optional_permissions: optionalPermissions} = chrome.runtime.getManifest();
 	globalOptions = {
 		title: `Enable ${name} on this domain`,
 		reloadOnSuccess: `Do you want to reload this page to apply ${name}?`,
-		...options
+		...options,
 	};
 
 	if (!chrome.contextMenus) {
 		throw new Error('webext-domain-permission-toggle requires the `contextMenu` permission');
 	}
 
-	const optionalHosts = optional_permissions?.filter(permission => /<all_urls>|\*/.test(permission));
+	const optionalHosts = optionalPermissions?.filter(permission => /<all_urls>|\*/.test(permission));
 	if (!optionalHosts || optionalHosts.length === 0) {
 		throw new TypeError('webext-domain-permission-toggle some wildcard hosts to be specified in `optional_permissions`');
 	}
@@ -164,7 +164,7 @@ export default function addDomainPermissionToggle(options?: Options): void {
 		contexts: ['page_action', 'browser_action'],
 
 		// Note: This is completely ignored by Chrome and Safari. Great. #14
-		documentUrlPatterns: optionalHosts
+		documentUrlPatterns: optionalHosts,
 	});
 
 	chrome.contextMenus.onClicked.addListener(handleClick);
