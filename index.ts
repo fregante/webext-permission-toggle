@@ -142,10 +142,13 @@ export default function addDomainPermissionToggle(options?: Options): void {
 	const {name, optional_permissions: optionalPermissions} = chrome.runtime.getManifest();
 	globalOptions = {
 		title: `Enable ${name} on this domain`,
-		reloadOnSuccess: `Do you want to reload this page to apply ${name}?`,
+		reloadOnSuccess: false,
 		...options,
 	};
 
+	if (globalOptions.reloadOnSuccess === true) {
+		globalOptions.reloadOnSuccess = `Do you want to reload this page to apply ${name}?`;
+	}
 	if (!chrome.contextMenus) {
 		throw new Error('webext-domain-permission-toggle requires the `contextMenu` permission');
 	}
