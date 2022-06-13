@@ -2,7 +2,10 @@
 
 <img width="331" alt="Context menu" src="https://user-images.githubusercontent.com/1402241/32874388-e0c64150-cacc-11e7-9a50-eae3727fd3c2.png" align="right">
 
-> WebExtension module: Browser-action context menu to request permission for the current tab. Chrome, Firefox, Safari.
+> WebExtension module: Browser-action context menu to request permission for the current tab.
+
+- Browsers: Chrome, Firefox, and Safari
+- Manifest: v2 and v3
 
 Works great when paired with [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts/blob/master/how-to-add-github-enterprise-support-to-web-extensions.md) if you want to also inject content scripts on the new domains.
 
@@ -29,10 +32,38 @@ import addDomainPermissionToggle from 'webext-domain-permission-toggle';
 addDomainPermissionToggle();
 ```
 
-### manifest.json
+### manifest.json v3
+
+```js
+// example background.worker.js
+navigator.importScripts(
+	"webext-domain-permission-toggle.js"
+)
+```
+```js
+{
+	"version": 3,
+	"action": { /* Firefox support */
+		"default_icon": "icon.png"
+	},
+	"permissions": [
+		"contextMenus",
+		"activeTab"
+	],
+	"optional_host_permissions": [
+		"*://*/*"
+	],
+	"background": {
+		"service_worker": "background.worker.js"
+	}
+}
+```
+
+### manifest.json v2
 
 ```js
 {
+	"version": 2,
 	"browser_action": { /* Firefox support */
 		"default_icon": "icon.png"
 	},

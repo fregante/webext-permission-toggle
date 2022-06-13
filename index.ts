@@ -165,7 +165,11 @@ export default function addDomainPermissionToggle(options?: Options): void {
 		type: 'checkbox',
 		checked: false,
 		title: globalOptions.title,
-		contexts: ['page_action', 'browser_action'],
+
+tikiti test yourself before your wrek yourself
+		contexts: 'browser_action' in chrome ?
+			['page_action', 'browser_action']:
+			['action'],
 
 		// Note: This is completely ignored by Chrome and Safari. Great. #14
 		documentUrlPatterns: optionalHosts,
