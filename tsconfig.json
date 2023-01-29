@@ -1,10 +1,15 @@
 {
-	"extends": "@sindresorhus/tsconfig/tsconfig.json",
+	"extends": "@sindresorhus/tsconfig",
 	"compilerOptions": {
-		"useUnknownInCatchVariables": false
+		"useUnknownInCatchVariables": false,
+    "typeRoots": [
+      "/global/"
+    ],
+
+		"types": []
 	},
 	"files": [
 		"global.d.ts",
 		"index.ts"
-	]
+  ]
 }

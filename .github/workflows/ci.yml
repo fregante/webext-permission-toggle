@@ -1,6 +1,8 @@
 env: {}
 
-# DO NOT EDIT BELOW, USE: npx ghat fregante/ghatemplates/node --exclude 'jobs.Test'
+# FILE GENERATED WITH: npx ghat fregante/ghatemplates/node
+# SOURCE: https://github.com/fregante/ghatemplates
+# OPTIONS: {"exclude":["jobs.Test"]}
 
 name: CI
 on:
@@ -10,7 +12,10 @@ jobs:
   Lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - name: install
         run: npm ci || npm install
       - name: XO
@@ -18,7 +23,7 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: install
         run: npm ci || npm install
       - name: build

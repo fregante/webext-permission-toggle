@@ -107,7 +107,9 @@ async function handleClick(
 			try {
 				await executeFunction(
 					tab.id,
-					'alert' /* Can't pass a raw native function */,
+					text => {
+						alert(text); /* Can't pass a raw native function */
+					},
 
 					// https://github.com/mozilla/webextension-polyfill/pull/258
 					String(error instanceof Error ? error : new Error(error.message)),
