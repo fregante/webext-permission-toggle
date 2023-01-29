@@ -8,7 +8,7 @@ import {executeFunction} from 'webext-content-scripts';
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
 let globalOptions: Options;
 
-interface Options {
+type Options = {
 	/**
 	 * The title of the action in the context menu.
 	 */
