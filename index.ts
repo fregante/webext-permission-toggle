@@ -1,6 +1,6 @@
 import chromeP from 'webext-polyfill-kinda';
 import {patternToRegex} from 'webext-patterns';
-import {isBackgroundPage} from 'webext-detect-page';
+import {isBackground} from 'webext-detect-page';
 import {getManifestPermissionsSync} from 'webext-additional-permissions';
 import {getTabUrl} from 'webext-tools';
 import {executeFunction} from 'webext-content-scripts';
@@ -131,7 +131,7 @@ async function handleClick(
  * @param options {Options}
  */
 export default function addDomainPermissionToggle(options?: Options): void {
-	if (!isBackgroundPage()) {
+	if (!isBackground()) {
 		throw new Error('webext-domain-permission-toggle can only be called from a background page');
 	}
 
@@ -156,7 +156,7 @@ export default function addDomainPermissionToggle(options?: Options): void {
 
 	const optionalHosts = optionalPermissions?.filter(permission => /<all_urls>|\*/.test(permission));
 	if (!optionalHosts || optionalHosts.length === 0) {
-		throw new TypeError('webext-domain-permission-toggle some wildcard hosts to be specified in `optional_permissions`');
+		throw new TypeError('webext-domain-permission-toggle requires some wildcard hosts to be specified in `optional_permissions`');
 	}
 
 	chrome.contextMenus.remove(contextMenuId, () => chrome.runtime.lastError);
