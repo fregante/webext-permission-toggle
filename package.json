@@ -46,7 +46,7 @@
 	},
 	"dependencies": {
 		"webext-additional-permissions": "^2.4.0",
-		"webext-content-scripts": "^2.5.1",
+		"webext-content-scripts": "^2.5.2",
 		"webext-detect-page": "^4.0.1",
 		"webext-patterns": "^1.3.0",
 		"webext-polyfill-kinda": "^1.0.0",
@@ -56,9 +56,9 @@
 		"@parcel/config-webextension": "^2.8.3",
 		"@parcel/transformer-webextension": "^2.8.3",
 		"@sindresorhus/tsconfig": "^3.0.1",
-		"@types/chrome": "^0.0.210",
+		"@types/chrome": "^0.0.211",
 		"parcel": "^2.8.3",
-		"typescript": "^4.9.4",
+		"typescript": "^4.9.5",
 		"xo": "^0.53.1"
 	},
 	"targets": {
