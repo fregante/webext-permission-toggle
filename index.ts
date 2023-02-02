@@ -19,7 +19,7 @@ type Options = {
 	 * Set a `string` to customize the message and `false` (default) to avoid the reload and its request.
 	 */
 	reloadOnSuccess?: string | boolean;
-}
+};
 
 async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 	return chromeP.permissions.contains({
@@ -110,18 +110,16 @@ async function handleClick(
 					text => {
 						alert(text); /* Can't pass a raw native function */
 					},
-
-					// https://github.com/mozilla/webextension-polyfill/pull/258
-					String(error instanceof Error ? error : new Error(error.message)),
+					String(error),
 				);
 			} catch {
 				alert(error); // One last attempt
 			}
-
-			void updateItem();
 		}
 
 		throw error;
+	} finally {
+		void updateItem();
 	}
 }
 
