@@ -1,6 +1,6 @@
 import chromeP from 'webext-polyfill-kinda';
 import {patternToRegex} from 'webext-patterns';
-import {isBackgroundPage} from 'webext-detect-page';
+import {isBackground} from 'webext-detect-page';
 import {getManifestPermissionsSync} from 'webext-additional-permissions';
 import {getTabUrl} from 'webext-tools';
 import {executeFunction} from 'webext-content-scripts';
@@ -8,7 +8,7 @@ import {executeFunction} from 'webext-content-scripts';
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
 let globalOptions: Options;
 
-interface Options {
+type Options = {
 	/**
 	 * The title of the action in the context menu.
 	 */
@@ -19,7 +19,7 @@ interface Options {
 	 * Set a `string` to customize the message and `false` (default) to avoid the reload and its request.
 	 */
 	reloadOnSuccess?: string | boolean;
-}
+};
 
 async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 	return chromeP.permissions.contains({
@@ -107,19 +107,19 @@ async function handleClick(
 			try {
 				await executeFunction(
 					tab.id,
-					'alert' /* Can't pass a raw native function */,
-
-					// https://github.com/mozilla/webextension-polyfill/pull/258
-					String(error instanceof Error ? error : new Error(error.message)),
+					text => {
+						alert(text); /* Can't pass a raw native function */
+					},
+					String(error),
 				);
 			} catch {
 				alert(error); // One last attempt
 			}
-
-			void updateItem();
 		}
 
 		throw error;
+	} finally {
+		void updateItem();
 	}
 }
 
@@ -131,7 +131,7 @@ async function handleClick(
  * @param options {Options}
  */
 export default function addDomainPermissionToggle(options?: Options): void {
-	if (!isBackgroundPage()) {
+	if (!isBackground()) {
 		throw new Error('webext-domain-permission-toggle can only be called from a background page');
 	}
 
@@ -156,7 +156,7 @@ export default function addDomainPermissionToggle(options?: Options): void {
 
 	const optionalHosts = optionalPermissions?.filter(permission => /<all_urls>|\*/.test(permission));
 	if (!optionalHosts || optionalHosts.length === 0) {
-		throw new TypeError('webext-domain-permission-toggle some wildcard hosts to be specified in `optional_permissions`');
+		throw new TypeError('webext-domain-permission-toggle requires some wildcard hosts to be specified in `optional_permissions`');
 	}
 
 	chrome.contextMenus.remove(contextMenuId, () => chrome.runtime.lastError);
