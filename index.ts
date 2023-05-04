@@ -139,7 +139,17 @@ export default function addDomainPermissionToggle(options?: Options): void {
 		throw new Error('webext-domain-permission-toggle can only be initialized once');
 	}
 
-	const {name, optional_permissions: optionalPermissions} = chrome.runtime.getManifest();
+	const {name, permissions, optional_permissions: optionalPermissions} = chrome.runtime.getManifest();
+
+	if (!permissions?.includes('contextMenus')) {
+		throw new Error('webext-domain-permission-toggle requires the `contextMenus` permission');
+	}
+
+	if (!chrome.contextMenus) {
+		console.warn('chrome.contextMenus is not available');
+		return;
+	}
+
 	globalOptions = {
 		title: `Enable ${name} on this domain`,
 		reloadOnSuccess: false,
@@ -148,10 +158,6 @@ export default function addDomainPermissionToggle(options?: Options): void {
 
 	if (globalOptions.reloadOnSuccess === true) {
 		globalOptions.reloadOnSuccess = `Do you want to reload this page to apply ${name}?`;
-	}
-
-	if (!chrome.contextMenus) {
-		throw new Error('webext-domain-permission-toggle requires the `contextMenu` permission');
 	}
 
 	const optionalHosts = optionalPermissions?.filter(permission => /<all_urls>|\*/.test(permission));
