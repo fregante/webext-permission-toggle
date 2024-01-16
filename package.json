@@ -40,8 +40,6 @@
 			"webextensions"
 		],
 		"rules": {
-			"@typescript-eslint/no-implicit-any-catch": "off",
-			"@typescript-eslint/restrict-template-expressions": "off",
 			"no-alert": "off"
 		}
 	},

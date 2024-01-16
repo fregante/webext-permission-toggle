@@ -160,20 +160,22 @@ export default function addDomainPermissionToggle(options?: Options): void {
 		globalOptions.reloadOnSuccess = `Do you want to reload this page to apply ${manifest.name}?`;
 	}
 
-	const optHostPermsKey = manifest.version === '2' ? 'optional_permissions' : 'optional_host_permissions';
-	// @types/chrome is missing a type for optional_host_permissions:
-	//   https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/68051
-	//
-	// const optHostPerms: Pick<chromeP.runtime.Manifest, 'optional_permissions' | 'optional_host_permissions'> = manifest[optHostPermsKey];
-	const optHostPerms = manifest[optHostPermsKey] as string[] | undefined;
-	const optionalHosts = optHostPerms?.filter((permission: string) => /<all_urls>|\*/.test(permission));
-	if (!optionalHosts || optionalHosts.length === 0) {
-		throw new TypeError('webext-domain-permission-toggle requires some wildcard hosts to be specified in `optional_permissions`');
+	const optionalHosts = [
+		...manifest.optional_permissions ?? [],
+		...manifest.optional_host_permissions as string[] ?? [],
+	].filter((permission: string) => permission === '<all_urls>' || permission.includes('*'));
+
+	if (optionalHosts.length === 0) {
+		throw new TypeError('webext-domain-permission-toggle requires some wildcard hosts to be specified in `optional_permissions` or `optional_host_permissions` (MV3)');
 	}
 
+	// Remove any existing context menu item and silence any error
 	chrome.contextMenus.remove(contextMenuId, () => chrome.runtime.lastError);
+
 	const contexts: chromeP.contextMenus.ContextType[] = 'browser_action' in chrome
-		? ['page_action', 'browser_action'] : ['action'];
+		? ['page_action', 'browser_action']
+		: ['action'];
+
 	chrome.contextMenus.create({
 		id: contextMenuId,
 		type: 'checkbox',
