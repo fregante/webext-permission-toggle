@@ -172,7 +172,7 @@ export default function addDomainPermissionToggle(options?: Options): void {
 	// Remove any existing context menu item and silence any error
 	chrome.contextMenus.remove(contextMenuId, () => chrome.runtime.lastError);
 
-	const contexts: chromeP.contextMenus.ContextType[] = 'browser_action' in chrome
+	const contexts: chromeP.contextMenus.ContextType[] = manifest.manifest_version === 2
 		? ['page_action', 'browser_action']
 		: ['action'];
 
