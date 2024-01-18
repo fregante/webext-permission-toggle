@@ -22,7 +22,6 @@
 	"exports": "./index.js",
 	"main": "./index.js",
 	"types": "./index.d.ts",
-	"browserlist": "last 2 Chrome versions",
 	"files": [
 		"index.js",
 		"index.d.ts"
@@ -61,6 +60,7 @@
 		"typescript": "^5.0.4",
 		"xo": "^0.54.2"
 	},
+	"browserlist": "last 2 Chrome versions",
 	"targets": {
 		"main": false,
 		"mv2": {
