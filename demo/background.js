@@ -1,19 +1,16 @@
+import chromeP from 'webext-polyfill-kinda';
 import addDomainPermissionToggle from '..';
+
+console.log('Extension ready. Reload any tab to see the logs.');
 
 addDomainPermissionToggle();
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 	if (!tab.url) {
 		console.log('No access to tab', tabId);
 		return;
 	}
 
-	console.log('Access to tab', tabId, tab.url);
-	chrome.scripting.executeScript({
-		target: {tabId},
-		function() {
-			document.body.style.backgroundColor = 'yellow';
-			console.log('chrome.tabs.onUpdated was fired');
-		},
-	});
+	const why = await chromeP.permissions.contains({origins: [tab.url]}) ? 'granted' : 'just because of activeTab';
+	console.log('Access to tab', tabId, tab.url, why);
 });
