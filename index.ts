@@ -34,7 +34,7 @@ async function updateItem(url?: string): Promise<void> {
 
 	// No URL means no activeTab, no manifest permission, no granted permission, or no permission possible (chrome://)
 	if (url) {
-		const origin = new URL(url).origin;
+		const {origin} = new URL(url);
 		// Manifest permissions can't be removed; this disables the toggle on those domains
 		const isDefault = isUrlPermittedByManifest(url);
 		settings.enabled = !isDefault;
