@@ -1,7 +1,6 @@
 import chromeP from 'webext-polyfill-kinda';
-import {patternToRegex} from 'webext-patterns';
 import {isBackground} from 'webext-detect-page';
-import {getManifestPermissionsSync} from 'webext-additional-permissions';
+import {isUrlPermittedByManifest} from 'webext-permissions';
 import {getTabUrl} from 'webext-tools';
 import {executeFunction} from 'webext-content-scripts';
 
@@ -35,10 +34,9 @@ async function updateItem(url?: string): Promise<void> {
 
 	// No URL means no activeTab, no manifest permission, no granted permission, or no permission possible (chrome://)
 	if (url) {
-		const origin = new URL(url).origin;
+		const {origin} = new URL(url);
 		// Manifest permissions can't be removed; this disables the toggle on those domains
-		const manifestPermissions = getManifestPermissionsSync();
-		const isDefault = patternToRegex(...manifestPermissions.origins).test(origin);
+		const isDefault = isUrlPermittedByManifest(url);
 		settings.enabled = !isDefault;
 
 		// We might have temporary permission as part of `activeTab`, so it needs to be properly checked
