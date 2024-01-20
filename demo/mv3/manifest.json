@@ -1,6 +1,6 @@
 {
 	"$schema": "https://json.schemastore.org/chrome-manifest",
-	"name": "webext-domain-permission-toggle",
+	"name": "webext-host-permission-toggle",
 	"version": "0.0.0",
 	"manifest_version": 3,
 	"permissions": [

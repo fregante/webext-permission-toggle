@@ -1,5 +1,5 @@
 {
-	"name": "webext-domain-permission-toggle",
+	"name": "webext-host-permission-toggle",
 	"version": "4.1.0",
 	"description": "Browser-action context menu to request permission for the current tab. Chrome, Firefox, Safari.",
 	"keywords": [
@@ -14,7 +14,7 @@
 		"ui",
 		"webextension"
 	],
-	"repository": "fregante/webext-domain-permission-toggle",
+	"repository": "fregante/webext-host-permission-toggle",
 	"funding": "https://github.com/sponsors/fregante",
 	"license": "MIT",
 	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
