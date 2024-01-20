@@ -71,9 +71,6 @@ async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<
 
 	const userAccepted = await chromeP.permissions.request(permissionData);
 	if (!userAccepted) {
-		chrome.contextMenus.update(contextMenuId, {
-			checked: false,
-		});
 		return;
 	}
 
@@ -117,7 +114,7 @@ async function handleClick(
 
 		throw error;
 	} finally {
-		void updateItem();
+		void updateItem(tab?.id ? await getTabUrl(tab?.id) : '');
 	}
 }
 
