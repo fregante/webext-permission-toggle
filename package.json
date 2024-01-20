@@ -46,7 +46,6 @@
 	"dependencies": {
 		"webext-content-scripts": "^2.6.1",
 		"webext-detect-page": "^5.0.0",
-		"webext-patterns": "^1.4.0",
 		"webext-permissions": "^3.1.2",
 		"webext-polyfill-kinda": "^1.0.2",
 		"webext-tools": "^1.2.3"
