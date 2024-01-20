@@ -61,16 +61,24 @@
 	"engines": {
 		"node": ">=16"
 	},
-	"browserlist": "last 2 Chrome versions",
+	"@parcel/resolver-default": {
+		"packageExports": true
+	},
 	"targets": {
 		"main": false,
 		"mv2": {
+			"engines": {
+				"browsers": "last 2 Chrome versions"
+			},
 			"source": "demo/mv2/manifest.json",
 			"sourceMap": {
 				"inline": true
 			}
 		},
 		"mv3": {
+			"engines": {
+				"browsers": "last 2 Chrome versions"
+			},
 			"source": "demo/mv3/manifest.json",
 			"sourceMap": {
 				"inline": true

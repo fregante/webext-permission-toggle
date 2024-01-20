@@ -1,5 +1,5 @@
 import chromeP from 'webext-polyfill-kinda';
-import addDomainPermissionToggle from '..';
+import addDomainPermissionToggle from 'webext-domain-permission-toggle';
 
 console.log('Extension ready. Reload any tab to see the logs.');
 
