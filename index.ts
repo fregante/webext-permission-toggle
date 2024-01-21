@@ -7,6 +7,8 @@ import {executeFunction} from 'webext-content-scripts';
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
 let globalOptions: Options;
 
+const noTab = 'The browser didn\'t supply any information about the active tab.';
+
 type Options = {
 	/**
 	 * The title of the action in the context menu.
@@ -19,6 +21,13 @@ type Options = {
 	 */
 	reloadOnSuccess?: string | boolean;
 };
+
+function assertTab(tab: chrome.tabs.Tab | undefined):
+	asserts tab is chrome.tabs.Tab & {id: number} {
+	if (!tab?.id) {
+		throw new Error(noTab);
+	}
+}
 
 async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 	return chromeP.permissions.contains({
@@ -46,44 +55,31 @@ async function updateItem(url?: string): Promise<void> {
 	chrome.contextMenus.update(contextMenuId, settings);
 }
 
-async function togglePermission(tab: chrome.tabs.Tab, toggle: boolean): Promise<void> {
+/**
+ * Requests or removes the host permission for the specified tab
+ * @returns Whether the permission exists after the request/removal
+ */
+async function setPermission(url: string | undefined, request: boolean): Promise<boolean> {
 	// Don't use non-ASCII characters because Safari breaks the encoding in executeScript.code
-	const safariError = 'The browser didn\'t supply any information about the active tab.';
-	if (!tab.url && toggle) {
-		throw new Error(`Please try again. ${safariError}`);
+	if (!url && request) {
+		throw new Error(`Please try again. ${noTab}`);
 	}
 
-	if (!tab.url && !toggle) {
-		throw new Error(`Couldn't disable the extension on the current tab. ${safariError}`);
+	if (!url && !request) {
+		throw new Error(`Couldn't disable the extension on the current tab. ${noTab}`);
 	}
 
 	// TODO: Ensure that URL is in `optional_permissions`
+	// TODO: https://github.com/fregante/webext-domain-permission-toggle/issues/37
 	const permissionData = {
 		origins: [
-			new URL(tab.url!).origin + '/*',
+			new URL(url!).origin + '/*',
 		],
 	};
 
-	if (!toggle) {
-		void chromeP.permissions.remove(permissionData);
-		return;
-	}
+	await chromeP.permissions[request ? 'request' : 'remove'](permissionData);
 
-	const userAccepted = await chromeP.permissions.request(permissionData);
-	if (!userAccepted) {
-		chrome.contextMenus.update(contextMenuId, {
-			checked: false,
-		});
-		return;
-	}
-
-	if (globalOptions.reloadOnSuccess) {
-		void executeFunction(tab.id!, (message: string) => {
-			if (confirm(message)) {
-				location.reload();
-			}
-		}, globalOptions.reloadOnSuccess);
-	}
+	return chromeP.permissions.contains(permissionData);
 }
 
 async function handleTabActivated({tabId}: chrome.tabs.TabActiveInfo): Promise<void> {
@@ -98,9 +94,30 @@ async function handleClick(
 		return;
 	}
 
+	let url: string | undefined;
+
 	try {
-		await togglePermission(tab!, checked!);
+		assertTab(tab);
+		url = tab.url ?? await getTabUrl(tab.id);
+		const permissionExistsNow = await setPermission(tab.url, checked!);
+		const settingWasSuccessful = permissionExistsNow === checked;
+		// If successful, Chrome already natively updated the context menu item.
+		if (!settingWasSuccessful) {
+			chrome.contextMenus.update(contextMenuId, {
+				checked: permissionExistsNow,
+			});
+		}
+
+		if (permissionExistsNow && globalOptions.reloadOnSuccess) {
+			void executeFunction(tab.id, (message: string) => {
+				if (confirm(message)) {
+					location.reload();
+				}
+			}, globalOptions.reloadOnSuccess);
+		}
 	} catch (error) {
+		void updateItem(url);
+
 		if (tab?.id) {
 			try {
 				await executeFunction(
@@ -116,8 +133,6 @@ async function handleClick(
 		}
 
 		throw error;
-	} finally {
-		void updateItem();
 	}
 }
 
