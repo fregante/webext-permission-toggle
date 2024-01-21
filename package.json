@@ -43,6 +43,7 @@
 		}
 	},
 	"dependencies": {
+		"webext-alert": "^0.9.0",
 		"webext-content-scripts": "^2.6.1",
 		"webext-detect-page": "^5.0.0",
 		"webext-permissions": "^3.1.2",
