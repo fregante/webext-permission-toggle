@@ -1,5 +1,5 @@
-import chromeP from 'webext-polyfill-kinda';
-import {isBackground} from 'webext-detect-page';
+import chromePromised from 'webext-polyfill-kinda';
+import {isBackground, isChrome} from 'webext-detect-page';
 import {isUrlPermittedByManifest} from 'webext-permissions';
 import {getTabUrl} from 'webext-tools';
 import alert from 'webext-alert';
@@ -7,6 +7,10 @@ import {executeFunction} from 'webext-content-scripts';
 
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
 let globalOptions: Options;
+
+const chromeP = isChrome() && globalThis.chrome?.runtime?.getManifest().manifest_version < 3
+	? chromePromised
+	: chrome;
 
 type Options = {
 	/**
@@ -180,13 +184,13 @@ export default function addDomainPermissionToggle(options?: Options): void {
 	].filter((permission: string) => permission === '<all_urls>' || permission.includes('*'));
 
 	if (optionalHosts.length === 0) {
-		throw new TypeError('webext-domain-permission-toggle requires some wildcard hosts to be specified in `optional_permissions` or `optional_host_permissions` (MV3)');
+		throw new TypeError('webext-domain-permission-toggle requires some wildcard hosts to be specified in `optional_permissions` (MV2) or `optional_host_permissions` (MV3)');
 	}
 
 	// Remove any existing context menu item and silence any error
 	chrome.contextMenus.remove(contextMenuId, () => chrome.runtime.lastError);
 
-	const contexts: chromeP.contextMenus.ContextType[] = manifest.manifest_version === 2
+	const contexts: chrome.contextMenus.ContextType[] = manifest.manifest_version === 2
 		? ['page_action', 'browser_action']
 		: ['action'];
 
