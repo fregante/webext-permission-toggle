@@ -8,7 +8,7 @@ import {executeFunction} from 'webext-content-scripts';
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
 let globalOptions: Options;
 
-const chromeP = isChrome() && chrome.runtime.getManifest().manifest_version < 3
+const chromeP = isChrome() && globalThis.chrome?.runtime?.getManifest().manifest_version < 3
 	? chromePromised
 	: chrome;
 
