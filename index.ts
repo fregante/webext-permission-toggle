@@ -53,7 +53,6 @@ async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 }
 
 function updateItemRaw({checked, enabled}: chrome.contextMenus.UpdateProperties): void {
-	console.log('updateItemRaw', {checked, enabled});
 	chrome.contextMenus.update(contextMenuId, {
 		checked,
 		enabled,
@@ -61,7 +60,6 @@ function updateItemRaw({checked, enabled}: chrome.contextMenus.UpdateProperties)
 }
 
 async function updateItem(url?: string): Promise<void> {
-	console.trace('updateItem', {url});
 	if (!url) {
 		// No URL means no activeTab, no manifest permission, no granted permission, OR no permission possible (chrome://)
 		// Since we can't differentiate between these cases, we can't disable the toggle
@@ -148,7 +146,9 @@ async function handleClick(
 			}, globalOptions.reloadOnSuccess);
 		}
 	} catch (error) {
-		void updateItem(url);
+		// Delay updating the context menu item because of spurious events and activeTab race conditions
+		// https://github.com/fregante/webext-domain-permission-toggle/pull/45
+		setTimeout(updateItem, 500, url);
 
 		if (tab?.id) {
 			try {
