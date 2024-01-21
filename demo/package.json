@@ -1,6 +1,6 @@
 {
 	"type": "module",
 	"alias": {
-		"webext-host-permission-toggle": "../index.ts"
+		"webext-permission-toggle": "../index.ts"
 	}
 }

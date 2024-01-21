@@ -1,4 +1,4 @@
-Demo/test extension for `webext-host-permission-toggle`
+Demo/test extension for `webext-permission-toggle`
 
 Run these 3 commands simultaneusly to manually test the module:
 

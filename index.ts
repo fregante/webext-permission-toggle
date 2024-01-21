@@ -4,7 +4,7 @@ import {isUrlPermittedByManifest} from 'webext-permissions';
 import {getTabUrl} from 'webext-tools';
 import {executeFunction} from 'webext-content-scripts';
 
-const contextMenuId = 'webext-host-permission-toggle:add-permission';
+const contextMenuId = 'webext-permission-toggle:add-permission';
 let globalOptions: Options;
 
 type Options = {
@@ -128,19 +128,19 @@ async function handleClick(
  *
  * @param options {Options}
  */
-export default function addHostPermissionToggle(options?: Options): void {
+export default function addPermissionToggle(options?: Options): void {
 	if (!isBackground()) {
-		throw new Error('webext-host-permission-toggle can only be called from a background page');
+		throw new Error('webext-permission-toggle can only be called from a background page');
 	}
 
 	if (globalOptions) {
-		throw new Error('webext-host-permission-toggle can only be initialized once');
+		throw new Error('webext-permission-toggle can only be initialized once');
 	}
 
 	const manifest = chrome.runtime.getManifest();
 
 	if (!manifest.permissions?.includes('contextMenus')) {
-		throw new Error('webext-host-permission-toggle requires the `contextMenus` permission');
+		throw new Error('webext-permission-toggle requires the `contextMenus` permission');
 	}
 
 	if (!chrome.contextMenus) {
@@ -164,7 +164,7 @@ export default function addHostPermissionToggle(options?: Options): void {
 	].filter((permission: string) => permission === '<all_urls>' || permission.includes('*'));
 
 	if (optionalHosts.length === 0) {
-		throw new TypeError('webext-host-permission-toggle requires some wildcard hosts to be specified in `optional_permissions` or `optional_host_permissions` (MV3)');
+		throw new TypeError('webext-permission-toggle requires some wildcard hosts to be specified in `optional_permissions` or `optional_host_permissions` (MV3)');
 	}
 
 	// Remove any existing context menu item and silence any error

@@ -1,4 +1,4 @@
-# webext-host-permission-toggle [![npm version](https://img.shields.io/npm/v/webext-host-permission-toggle.svg)](https://www.npmjs.com/package/webext-host-permission-toggle)
+# webext-permission-toggle [![npm version](https://img.shields.io/npm/v/webext-permission-toggle.svg)](https://www.npmjs.com/package/webext-permission-toggle)
 
 <img width="331" alt="Context menu" src="https://user-images.githubusercontent.com/1402241/32874388-e0c64150-cacc-11e7-9a50-eae3727fd3c2.png" align="right">
 
@@ -9,27 +9,27 @@
 
 Works great when paired with [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts/blob/master/how-to-add-github-enterprise-support-to-web-extensions.md) if you want to also inject content scripts on the new hosts.
 
-This repository even includes a [customizable guide](https://fregante.github.io/webext-host-permission-toggle/) to tell your users how to use it. At the bottom of that page, you'll find a link that lets you customize it with your extension’s name and icon. You can link your users to it directly, it's a permalink.
+This repository even includes a [customizable guide](https://fregante.github.io/webext-permission-toggle/) to tell your users how to use it. At the bottom of that page, you'll find a link that lets you customize it with your extension’s name and icon. You can link your users to it directly, it's a permalink.
 
 ## Install
 
-You can download the [standalone bundle](https://bundle.fregante.com/?pkg=webext-host-permission-toggle&global=addHostPermissionToggle) and include it in your `manifest.json`.
+You can download the [standalone bundle](https://bundle.fregante.com/?pkg=webext-permission-toggle&global=addPermissionToggle) and include it in your `manifest.json`.
 
 Or use `npm`:
 
 ```sh
-npm install webext-host-permission-toggle
+npm install webext-permission-toggle
 ```
 
 ```js
-import addHostPermissionToggle from 'webext-host-permission-toggle';
+import addPermissionToggle from 'webext-permission-toggle';
 ```
 
 ## Usage
 
 ```js
 // In background.js
-addHostPermissionToggle();
+addPermissionToggle();
 ```
 
 ### manifest.json v3
@@ -37,7 +37,7 @@ addHostPermissionToggle();
 ```js
 // example background.worker.js
 navigator.importScripts(
-	"webext-host-permission-toggle.js"
+	"webext-permission-toggle.js"
 )
 ```
 ```js
@@ -77,7 +77,7 @@ navigator.importScripts(
 	],
 	"background": {
 		"scripts": [
-			"webext-host-permission-toggle.js",
+			"webext-permission-toggle.js",
 			"background.js"
 		]
 	}
@@ -86,7 +86,7 @@ navigator.importScripts(
 
 ## API
 
-### addHostPermissionToggle([options])
+### addPermissionToggle([options])
 
 <img width="331" alt="Context menu" src="https://user-images.githubusercontent.com/1402241/32874388-e0c64150-cacc-11e7-9a50-eae3727fd3c2.png" align="right">
 

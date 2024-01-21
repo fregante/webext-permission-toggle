@@ -1,9 +1,9 @@
 import chromeP from 'webext-polyfill-kinda';
-import addHostPermissionToggle from 'webext-host-permission-toggle';
+import addPermissionToggle from 'webext-permission-toggle';
 
 console.log('Extension ready. Reload any tab to see the logs.');
 
-addHostPermissionToggle();
+addPermissionToggle();
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 	if (!tab.url) {
