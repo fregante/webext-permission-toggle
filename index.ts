@@ -5,7 +5,7 @@ import {getTabUrl} from 'webext-tools';
 import alert from 'webext-alert';
 import {executeFunction, isScriptableUrl} from 'webext-content-scripts';
 
-const contextMenuId = 'webext-domain-permission-toggle:add-permission';
+const contextMenuId = 'webext-permission-toggle:add-permission';
 let globalOptions: Options;
 
 const chromeP = isChrome() && globalThis.chrome?.runtime?.getManifest().manifest_version < 3
@@ -98,7 +98,7 @@ async function updateItem(url?: string): Promise<void> {
  */
 async function setPermission(url: string | undefined, request: boolean): Promise<boolean> {
 	// TODO: Ensure that URL is in `optional_permissions`
-	// TODO: https://github.com/fregante/webext-domain-permission-toggle/issues/37
+	// TODO: https://github.com/fregante/webext-permission-toggle/issues/37
 	const permissionData = {
 		origins: [
 			new URL(url!).origin + '/*',
@@ -147,7 +147,7 @@ async function handleClick(
 		}
 	} catch (error) {
 		// Delay updating the context menu item because of spurious events and activeTab race conditions
-		// https://github.com/fregante/webext-domain-permission-toggle/pull/45
+		// https://github.com/fregante/webext-permission-toggle/pull/45
 		setTimeout(updateItem, 500, url);
 
 		if (tab?.id) {
@@ -175,19 +175,19 @@ async function handleClick(
  *
  * @param options {Options}
  */
-export default function addDomainPermissionToggle(options?: Options): void {
+export default function addPermissionToggle(options?: Options): void {
 	if (!isBackground()) {
-		throw new Error('webext-domain-permission-toggle can only be called from a background page');
+		throw new Error('webext-permission-toggle can only be called from a background page');
 	}
 
 	if (globalOptions) {
-		throw new Error('webext-domain-permission-toggle can only be initialized once');
+		throw new Error('webext-permission-toggle can only be initialized once');
 	}
 
 	const manifest = chrome.runtime.getManifest();
 
 	if (!manifest.permissions?.includes('contextMenus')) {
-		throw new Error('webext-domain-permission-toggle requires the `contextMenus` permission');
+		throw new Error('webext-permission-toggle requires the `contextMenus` permission');
 	}
 
 	if (!chrome.contextMenus) {
@@ -211,7 +211,7 @@ export default function addDomainPermissionToggle(options?: Options): void {
 	].filter((permission: string) => permission === '<all_urls>' || permission.includes('*'));
 
 	if (optionalHosts.length === 0) {
-		throw new TypeError('webext-domain-permission-toggle requires some wildcard hosts to be specified in `optional_permissions` (MV2) or `optional_host_permissions` (MV3)');
+		throw new TypeError('webext-permission-toggle requires some wildcard hosts to be specified in `optional_permissions` (MV2) or `optional_host_permissions` (MV3)');
 	}
 
 	// Remove any existing context menu item and silence any error

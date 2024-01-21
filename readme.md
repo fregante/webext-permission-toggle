@@ -1,4 +1,4 @@
-# webext-domain-permission-toggle [![npm version](https://img.shields.io/npm/v/webext-domain-permission-toggle.svg)](https://www.npmjs.com/package/webext-domain-permission-toggle)
+# webext-permission-toggle [![npm version](https://img.shields.io/npm/v/webext-permission-toggle.svg)](https://www.npmjs.com/package/webext-permission-toggle)
 
 <img width="331" alt="Context menu" src="https://user-images.githubusercontent.com/1402241/32874388-e0c64150-cacc-11e7-9a50-eae3727fd3c2.png" align="right">
 
@@ -7,29 +7,29 @@
 - Browsers: Chrome, Firefox, and Safari
 - Manifest: v2 and v3
 
-Works great when paired with [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts/blob/master/how-to-add-github-enterprise-support-to-web-extensions.md) if you want to also inject content scripts on the new domains.
+Works great when paired with [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts/blob/master/how-to-add-github-enterprise-support-to-web-extensions.md) if you want to also inject content scripts on the new hosts.
 
-This repository even includes a [customizable guide](https://fregante.github.io/webext-domain-permission-toggle/) to tell your users how to use it. At the bottom of that page, you'll find a link that lets you customize it with your extension’s name and icon. You can link your users to it directly, it's a permalink.
+This repository even includes a [customizable guide](https://fregante.github.io/webext-permission-toggle/) to tell your users how to use it. At the bottom of that page, you'll find a link that lets you customize it with your extension’s name and icon. You can link your users to it directly, it's a permalink.
 
 ## Install
 
-You can download the [standalone bundle](https://bundle.fregante.com/?pkg=webext-domain-permission-toggle&global=addDomainPermissionToggle) and include it in your `manifest.json`.
+You can download the [standalone bundle](https://bundle.fregante.com/?pkg=webext-permission-toggle&global=addPermissionToggle) and include it in your `manifest.json`.
 
 Or use `npm`:
 
 ```sh
-npm install webext-domain-permission-toggle
+npm install webext-permission-toggle
 ```
 
 ```js
-import addDomainPermissionToggle from 'webext-domain-permission-toggle';
+import addPermissionToggle from 'webext-permission-toggle';
 ```
 
 ## Usage
 
 ```js
 // In background.js
-addDomainPermissionToggle();
+addPermissionToggle();
 ```
 
 ### manifest.json v3
@@ -37,7 +37,7 @@ addDomainPermissionToggle();
 ```js
 // example background.worker.js
 navigator.importScripts(
-	"webext-domain-permission-toggle.js"
+	"webext-permission-toggle.js"
 )
 ```
 ```js
@@ -77,7 +77,7 @@ navigator.importScripts(
 	],
 	"background": {
 		"scripts": [
-			"webext-domain-permission-toggle.js",
+			"webext-permission-toggle.js",
 			"background.js"
 		]
 	}
@@ -86,7 +86,7 @@ navigator.importScripts(
 
 ## API
 
-### addDomainPermissionToggle([options])
+### addPermissionToggle([options])
 
 <img width="331" alt="Context menu" src="https://user-images.githubusercontent.com/1402241/32874388-e0c64150-cacc-11e7-9a50-eae3727fd3c2.png" align="right">
 
@@ -116,7 +116,7 @@ If `true` or `string`, when the user accepts the new permission, they will be as
 
 ## Related
 
-- [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts) - Automatically registers your content_scripts on domains added via permission.request
+- [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts) - Automatically registers your content_scripts on hosts added via `permission.request()`
 - [webext-additional-permissions](https://github.com/fregante/webext-additional-permissions) - Get any optional permissions that users have granted you.
 - [webext-options-sync](https://github.com/fregante/webext-options-sync) - Helps you manage and autosave your extension's options. Chrome and Firefox.
 - [Awesome-WebExtensions](https://github.com/fregante/Awesome-WebExtensions) - A curated list of awesome resources for WebExtensions development.
