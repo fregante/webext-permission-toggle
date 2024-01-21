@@ -2,6 +2,7 @@ import chromeP from 'webext-polyfill-kinda';
 import {isBackground} from 'webext-detect-page';
 import {isUrlPermittedByManifest} from 'webext-permissions';
 import {getTabUrl} from 'webext-tools';
+import alert from 'webext-alert';
 import {executeFunction} from 'webext-content-scripts';
 
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
@@ -106,12 +107,12 @@ async function handleClick(
 				await executeFunction(
 					tab.id,
 					text => {
-						alert(text); /* Can't pass a raw native function */
+						window.alert(text); /* Can't pass a raw native function */
 					},
 					String(error),
 				);
 			} catch {
-				alert(error); // One last attempt
+				void alert(String(error));
 			}
 		}
 
