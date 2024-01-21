@@ -7,8 +7,6 @@ import {executeFunction} from 'webext-content-scripts';
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
 let globalOptions: Options;
 
-const noTab = 'The browser didn\'t supply any information about the active tab.';
-
 type Options = {
 	/**
 	 * The title of the action in the context menu.
@@ -25,7 +23,15 @@ type Options = {
 function assertTab(tab: chrome.tabs.Tab | undefined):
 	asserts tab is chrome.tabs.Tab & {id: number} {
 	if (!tab?.id) {
-		throw new Error(noTab);
+		// Don't use non-ASCII characters because Safari breaks the encoding in executeScript.code
+		throw new Error('The browser didn\'t supply any information about the active tab.');
+	}
+}
+
+function assertUrl(url: string | undefined): asserts url is string {
+	if (!url) {
+		// Don't use non-ASCII characters because Safari breaks the encoding in executeScript.code
+		throw new Error('The browser didn\'t supply any the current page\'s URL.');
 	}
 }
 
@@ -60,15 +66,6 @@ async function updateItem(url?: string): Promise<void> {
  * @returns Whether the permission exists after the request/removal
  */
 async function setPermission(url: string | undefined, request: boolean): Promise<boolean> {
-	// Don't use non-ASCII characters because Safari breaks the encoding in executeScript.code
-	if (!url && request) {
-		throw new Error(`Please try again. ${noTab}`);
-	}
-
-	if (!url && !request) {
-		throw new Error(`Couldn't disable the extension on the current tab. ${noTab}`);
-	}
-
 	// TODO: Ensure that URL is in `optional_permissions`
 	// TODO: https://github.com/fregante/webext-domain-permission-toggle/issues/37
 	const permissionData = {
@@ -99,7 +96,8 @@ async function handleClick(
 	try {
 		assertTab(tab);
 		url = tab.url ?? await getTabUrl(tab.id);
-		const permissionExistsNow = await setPermission(tab.url, checked!);
+		assertUrl(url);
+		const permissionExistsNow = await setPermission(url, checked!);
 		const settingWasSuccessful = permissionExistsNow === checked;
 		// If successful, Chrome already natively updated the context menu item.
 		if (!settingWasSuccessful) {
