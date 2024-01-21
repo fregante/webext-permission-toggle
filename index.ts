@@ -28,6 +28,8 @@ function assertTab(tab: chrome.tabs.Tab | undefined):
 	}
 }
 
+// TODO: Use `isScriptableTab` from `webext-detect-page` to fix:
+// https://github.com/fregante/webext-domain-permission-toggle/issues/21
 function assertUrl(url: string | undefined): asserts url is string {
 	if (!url) {
 		// Don't use non-ASCII characters because Safari breaks the encoding in executeScript.code
