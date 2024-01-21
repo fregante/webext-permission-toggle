@@ -3,7 +3,7 @@ import {isBackground, isChrome} from 'webext-detect-page';
 import {isUrlPermittedByManifest} from 'webext-permissions';
 import {getTabUrl} from 'webext-tools';
 import alert from 'webext-alert';
-import {executeFunction} from 'webext-content-scripts';
+import {executeFunction, isScriptableUrl} from 'webext-content-scripts';
 
 const contextMenuId = 'webext-domain-permission-toggle:add-permission';
 let globalOptions: Options;
@@ -33,12 +33,16 @@ function assertTab(tab: chrome.tabs.Tab | undefined):
 	}
 }
 
-// TODO: Use `isScriptableTab` from `webext-detect-page` to fix:
-// https://github.com/fregante/webext-domain-permission-toggle/issues/21
 function assertUrl(url: string | undefined): asserts url is string {
 	if (!url) {
 		// Don't use non-ASCII characters because Safari breaks the encoding in executeScript.code
 		throw new Error('The browser didn\'t supply the current page\'s URL.');
+	}
+}
+
+function assertScriptableUrl(url: string): void {
+	if (!isScriptableUrl(url)) {
+		throw new Error(chrome.runtime.getManifest().name + ' can\'t be enabled on this page.');
 	}
 }
 
@@ -48,24 +52,46 @@ async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 	});
 }
 
+function updateItemRaw({checked, enabled}: chrome.contextMenus.UpdateProperties): void {
+	console.log('updateItemRaw', {checked, enabled});
+	chrome.contextMenus.update(contextMenuId, {
+		checked,
+		enabled,
+	});
+}
+
 async function updateItem(url?: string): Promise<void> {
-	const settings = {
-		checked: false,
-		enabled: true,
-	};
-
-	// No URL means no activeTab, no manifest permission, no granted permission, or no permission possible (chrome://)
-	if (url) {
-		const {origin} = new URL(url);
-		// Manifest permissions can't be removed; this disables the toggle on those domains
-		const isDefault = isUrlPermittedByManifest(url);
-		settings.enabled = !isDefault;
-
-		// We might have temporary permission as part of `activeTab`, so it needs to be properly checked
-		settings.checked = isDefault || await isOriginPermanentlyAllowed(origin);
+	console.trace('updateItem', {url});
+	if (!url) {
+		// No URL means no activeTab, no manifest permission, no granted permission, OR no permission possible (chrome://)
+		// Since we can't differentiate between these cases, we can't disable the toggle
+		updateItemRaw({
+			enabled: true,
+			checked: false,
+		});
+		return;
 	}
 
-	chrome.contextMenus.update(contextMenuId, settings);
+	if (isScriptableUrl(url)) {
+		const {origin} = new URL(url);
+
+		// Manifest permissions can't be removed; this disables the toggle on those domains
+		const isDefault = isUrlPermittedByManifest(url);
+
+		updateItemRaw({
+			enabled: !isDefault,
+
+			// We might have temporary permission as part of `activeTab`, so it needs to be properly checked
+			checked: isDefault || await isOriginPermanentlyAllowed(origin),
+		});
+		return;
+	}
+
+	// We know the URL, and we know it's not scriptable (about:blank, chrome://, etc.)
+	updateItemRaw({
+		enabled: false,
+		checked: false,
+	});
 }
 
 /**
@@ -104,11 +130,12 @@ async function handleClick(
 		assertTab(tab);
 		url = tab.url ?? await getTabUrl(tab.id);
 		assertUrl(url);
+		assertScriptableUrl(url);
 		const permissionExistsNow = await setPermission(url, checked!);
 		const settingWasSuccessful = permissionExistsNow === checked;
 		// If successful, Chrome already natively updated the context menu item.
 		if (!settingWasSuccessful) {
-			chrome.contextMenus.update(contextMenuId, {
+			updateItemRaw({
 				checked: permissionExistsNow,
 			});
 		}
