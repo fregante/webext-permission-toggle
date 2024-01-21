@@ -31,7 +31,7 @@ function assertTab(tab: chrome.tabs.Tab | undefined):
 function assertUrl(url: string | undefined): asserts url is string {
 	if (!url) {
 		// Don't use non-ASCII characters because Safari breaks the encoding in executeScript.code
-		throw new Error('The browser didn\'t supply any the current page\'s URL.');
+		throw new Error('The browser didn\'t supply the current page\'s URL.');
 	}
 }
 
