@@ -16,7 +16,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: package.json
-      - run: npm install
+          cache: npm
+      - name: install
+        run: npm ci || npm install
       - name: XO
         run: npx xo
   Build:
@@ -26,15 +28,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: package.json
-      - run: npm install
-      - run: npm run build
-
-  Build-Demo:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: package.json
-      - run: npm install
-      - run: npm run demo:build
+          cache: npm
+      - name: install
+        run: npm ci || npm install
+      - name: build
+        run: npm run build

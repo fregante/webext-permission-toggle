@@ -43,20 +43,20 @@
 		}
 	},
 	"dependencies": {
-		"webext-alert": "^0.9.0",
+		"webext-alert": "^1.0.0",
 		"webext-content-scripts": "^2.6.1",
 		"webext-detect-page": "^5.0.1",
 		"webext-permissions": "^3.1.3",
 		"webext-polyfill-kinda": "^1.0.2",
-		"webext-tools": "^1.2.3"
+		"webext-tools": "^1.2.5"
 	},
 	"devDependencies": {
 		"@parcel/config-webextension": "^2.12.0",
 		"@parcel/transformer-webextension": "^2.12.0",
 		"@sindresorhus/tsconfig": "^5.0.0",
-		"@types/chrome": "^0.0.263",
+		"@types/chrome": "^0.0.268",
 		"parcel": "^2.12.0",
-		"typescript": "^5.4.3",
+		"typescript": "^5.4.5",
 		"xo": "^0.58.0"
 	},
 	"engines": {

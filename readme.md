@@ -119,7 +119,7 @@ If `true` or `string`, when the user accepts the new permission, they will be as
 ## Related
 
 - [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts) - Automatically registers your content_scripts on hosts added via `permission.request()`
-- [webext-additional-permissions](https://github.com/fregante/webext-additional-permissions) - Get any optional permissions that users have granted you.
+- [webext-permissions](https://github.com/fregante/webext-permissions) - Get any optional permissions that users have granted you.
 - [webext-options-sync](https://github.com/fregante/webext-options-sync) - Helps you manage and autosave your extension's options. Chrome and Firefox.
 - [Awesome-WebExtensions](https://github.com/fregante/Awesome-WebExtensions) - A curated list of awesome resources for WebExtensions development.
 - [More…](https://github.com/fregante/webext-fun)
