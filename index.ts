@@ -186,11 +186,15 @@ export default function addPermissionToggle(options?: Options): void {
 
 	const manifest = chrome.runtime.getManifest();
 
-	if (!manifest.permissions?.includes('contextMenus')) {
-		throw new Error('webext-permission-toggle requires the `contextMenus` permission');
-	}
-
 	if (!chrome.contextMenus) {
+		if (
+			!manifest.permissions?.includes('contextMenus')
+			// Disable setup error on Firefox Android
+			&& !/Android.+Firefox\//.test(navigator.userAgent)
+		) {
+			throw new Error('webext-permission-toggle requires the `contextMenus` permission');
+		}
+
 		console.warn('chrome.contextMenus is not available');
 		return;
 	}
