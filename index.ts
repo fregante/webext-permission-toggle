@@ -73,14 +73,16 @@ async function updateItem(url?: string): Promise<void> {
 	if (isScriptableUrl(url)) {
 		const {origin} = new URL(url);
 
-		// Manifest permissions can't be removed; this disables the toggle on those domains
 		const isDefault = isUrlPermittedByManifest(url);
 
-		updateItemRaw({
-			enabled: !isDefault,
+		// We might have temporary permission as part of `activeTab`, so it needs to be properly checked
+		const hasPermission = await isOriginPermanentlyAllowed(origin);
 
-			// We might have temporary permission as part of `activeTab`, so it needs to be properly checked
-			checked: isDefault || await isOriginPermanentlyAllowed(origin),
+		updateItemRaw({
+			// Don't let the user remove a default permission.
+			// However, if they removed it via Chrome's UI, let them re-enable it with this toggle.
+			enabled: !isDefault || !hasPermission,
+			checked: hasPermission,
 		});
 		return;
 	}
