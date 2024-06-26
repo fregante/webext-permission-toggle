@@ -82,6 +82,7 @@ async function updateItem(url?: string): Promise<void> {
 		updateItemRaw({
 			// Don't let the user remove a default permission.
 			// However, if they removed it via Chrome's UI, let them re-enable it with this toggle.
+			// https://github.com/fregante/webext-permission-toggle/pull/54
 			enabled: !isDefault || !hasPermission,
 			checked: hasPermission,
 		});

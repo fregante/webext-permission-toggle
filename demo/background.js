@@ -16,3 +16,6 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 });
 
 (chrome.action ?? chrome.browserAction).onClicked.addListener(async () => chromeP.permissions.request({origins: ['*://*/*']}));
+
+chrome.permissions.onAdded.addListener(permissions => console.log('Permissions added:', permissions));
+chrome.permissions.onRemoved.addListener(permissions => console.log('Permissions removed:', permissions));
