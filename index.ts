@@ -128,7 +128,8 @@ async function handleClick(
 
 	try {
 		assertTab(tab);
-		url = tab.url ?? await getTabUrl(tab.id);
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- `tab.url` can be an empty string
+		url = tab.url || await getTabUrl(tab.id);
 		assertUrl(url);
 		assertScriptableUrl(url);
 		const permissionExistsNow = await setPermission(url, checked!);
