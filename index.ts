@@ -171,6 +171,17 @@ async function handleClick(
 	}
 }
 
+async function updateCurrentTab(): Promise<void> {
+	const [tab] = await chromeP.tabs.query({
+		active: true,
+		currentWindow: true,
+	});
+
+	if (tab) {
+		await updateItem(tab.url);
+	}
+}
+
 /**
  * Adds an item to the browser action icon's context menu.
  * The user can access this menu by right clicking the icon. If your extension doesn't have any action or
@@ -246,4 +257,7 @@ export default function addPermissionToggle(options?: Options): void {
 			void updateItem(url ?? await getTabUrl(tabId) ?? '');
 		}
 	});
+
+	// https://github.com/fregante/webext-permission-toggle/issues/44
+	void updateCurrentTab();
 }
