@@ -100,14 +100,6 @@ async function updateItem(url?: string): Promise<void> {
  * @returns Whether the permission exists after the request/removal
  */
 async function setPermission(url: string, request: boolean): Promise<boolean> {
-	const {origins = []} = await chromeP.permissions.getAll();
-	const matchingPatterns = findMatchingPatterns(url, ...origins);
-	const current = matchingPatterns.length > 0;
-	if (current === request) {
-		// No change required
-		return request;
-	}
-
 	const permissionData = {
 		origins: [
 			new URL(url).origin + '/*',
@@ -120,6 +112,8 @@ async function setPermission(url: string, request: boolean): Promise<boolean> {
 		// The user, browser or extension might have granted permissions broader than the exact origin we find here.
 		// https://github.com/fregante/webext-permission-toggle/issues/37
 		// This might also remove a `*://*/*` permission if granted, which might unexpected but "technically correct" since, after this successful removal, the extension will no longer have access to the current domain, as requested.
+		const {origins = []} = await chromeP.permissions.getAll();
+		const matchingPatterns = findMatchingPatterns(url, ...origins);
 		console.debug('Removing permissions:', ...matchingPatterns);
 		await chromeP.permissions.remove({
 			origins: matchingPatterns,
