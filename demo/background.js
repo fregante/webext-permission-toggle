@@ -14,3 +14,5 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 	const why = await chromeP.permissions.contains({origins: [tab.url]}) ? 'granted' : 'just because of activeTab';
 	console.log('Access to tab', tabId, tab.url, why);
 });
+
+(chrome.action ?? chrome.browserAction).onClicked.addListener(async () => chromeP.permissions.request({origins: ['*://*/*']}));
