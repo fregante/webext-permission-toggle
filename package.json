@@ -87,6 +87,9 @@
 		}
 	},
 	"webExt": {
-		"sourceDir": "dist/mv3"
+		"sourceDir": "dist/mv3",
+		"run": {
+			"startUrl": ["https://github.com/"]
+		}
 	}
 }
