@@ -1,5 +1,5 @@
 import chromePromised from 'webext-polyfill-kinda';
-import {isBackground, isChrome} from 'webext-detect-page';
+import {isBackground, isChrome} from 'webext-detect';
 import {isUrlPermittedByManifest} from 'webext-permissions';
 import {findMatchingPatterns} from 'webext-patterns';
 import {getTabUrl} from 'webext-tools';
@@ -11,7 +11,7 @@ let globalOptions: Options;
 
 const chromeP = isChrome() && globalThis.chrome?.runtime?.getManifest().manifest_version < 3
 	? chromePromised
-	: chrome;
+	: globalThis.chrome;
 
 type Options = {
 	/**
@@ -140,7 +140,8 @@ async function handleClick(
 
 	try {
 		assertTab(tab);
-		url = tab.url ?? await getTabUrl(tab.id);
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- `tab.url` can be an empty string
+		url = tab.url || await getTabUrl(tab.id);
 		assertUrl(url);
 		assertScriptableUrl(url);
 		const permissionExistsNow = await setPermission(url, checked!);
