@@ -1,6 +1,7 @@
 import chromePromised from 'webext-polyfill-kinda';
 import {isBackground, isChrome} from 'webext-detect';
 import {isUrlPermittedByManifest} from 'webext-permissions';
+import {findMatchingPatterns} from 'webext-patterns';
 import {getTabUrl} from 'webext-tools';
 import alert from 'webext-alert';
 import {executeFunction, isScriptableUrl} from 'webext-content-scripts';
@@ -81,6 +82,7 @@ async function updateItem(url?: string): Promise<void> {
 		updateItemRaw({
 			// Don't let the user remove a default permission.
 			// However, if they removed it via Chrome's UI, let them re-enable it with this toggle.
+			// https://github.com/fregante/webext-permission-toggle/pull/54
 			enabled: !isDefault || !hasPermission,
 			checked: hasPermission,
 		});
@@ -98,16 +100,26 @@ async function updateItem(url?: string): Promise<void> {
  * Requests or removes the host permission for the specified tab
  * @returns Whether the permission exists after the request/removal
  */
-async function setPermission(url: string | undefined, request: boolean): Promise<boolean> {
-	// TODO: Ensure that URL is in `optional_permissions`
-	// TODO: https://github.com/fregante/webext-permission-toggle/issues/37
+async function setPermission(url: string, request: boolean): Promise<boolean> {
 	const permissionData = {
 		origins: [
-			new URL(url!).origin + '/*',
+			new URL(url).origin + '/*',
 		],
 	};
 
-	await chromeP.permissions[request ? 'request' : 'remove'](permissionData);
+	if (request) {
+		await chromeP.permissions.request(permissionData);
+	} else {
+		// The user, browser or extension might have granted permissions broader than the exact origin we find here.
+		// https://github.com/fregante/webext-permission-toggle/issues/37
+		// This might also remove a `*://*/*` permission if granted, which might unexpected but "technically correct" since, after this successful removal, the extension will no longer have access to the current domain, as requested.
+		const {origins = []} = await chromeP.permissions.getAll();
+		const matchingPatterns = findMatchingPatterns(url, ...origins);
+		console.debug('Removing permissions:', ...matchingPatterns);
+		await chromeP.permissions.remove({
+			origins: matchingPatterns,
+		});
+	}
 
 	return chromeP.permissions.contains(permissionData);
 }
