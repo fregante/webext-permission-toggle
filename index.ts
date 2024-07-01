@@ -1,5 +1,5 @@
 import chromePromised from 'webext-polyfill-kinda';
-import {isBackground, isChrome} from 'webext-detect-page';
+import {isBackground, isChrome} from 'webext-detect';
 import {isUrlPermittedByManifest} from 'webext-permissions';
 import {getTabUrl} from 'webext-tools';
 import alert from 'webext-alert';
@@ -10,7 +10,7 @@ let globalOptions: Options;
 
 const chromeP = isChrome() && globalThis.chrome?.runtime?.getManifest().manifest_version < 3
 	? chromePromised
-	: chrome;
+	: globalThis.chrome;
 
 type Options = {
 	/**
