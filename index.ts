@@ -10,7 +10,7 @@ let globalOptions: Options;
 
 const chromeP = isChrome() && globalThis.chrome?.runtime?.getManifest().manifest_version < 3
 	? chromePromised
-	: chrome;
+	: globalThis.chrome;
 
 type Options = {
 	/**
