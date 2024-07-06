@@ -128,6 +128,15 @@ async function handleTabActivated({tabId}: chrome.tabs.TabActiveInfo): Promise<v
 	void updateItem(await getTabUrl(tabId) ?? '');
 }
 
+async function handleWindowFocusChanged(windowId: number): Promise<void> {
+	const [tab] = await chromeP.tabs.query({
+		active: true,
+		windowId,
+	});
+
+	void updateItem(tab?.url);
+}
+
 async function handleClick(
 	{checked, menuItemId}: chrome.contextMenus.OnClickData,
 	tab?: chrome.tabs.Tab,
@@ -253,6 +262,9 @@ export default function addPermissionToggle(options?: Options): void {
 
 	chrome.contextMenus.onClicked.addListener(handleClick);
 	chrome.tabs.onActivated.addListener(handleTabActivated);
+	// Chrome won't fire `onFocusChanged` if the window is clicked when a context menu is open
+	// https://github.com/fregante/webext-permission-toggle/pull/60
+	chrome.windows.onFocusChanged.addListener(handleWindowFocusChanged, {windowTypes: ['normal']});
 	chrome.tabs.onUpdated.addListener(async (tabId, {status}, {url, active}) => {
 		if (active && status === 'complete') {
 			void updateItem(url ?? await getTabUrl(tabId) ?? '');
