@@ -1,6 +1,6 @@
 # webext-permission-toggle [![npm version](https://img.shields.io/npm/v/webext-permission-toggle.svg)](https://www.npmjs.com/package/webext-permission-toggle)
 
-<img width="331" alt="Context menu" src="https://user-images.githubusercontent.com/1402241/32874388-e0c64150-cacc-11e7-9a50-eae3727fd3c2.png" align="right">
+<img width="375" alt="Context menu" src="https://github.com/user-attachments/assets/b7d872a5-40a5-412f-9009-44de689c87ae" align="right">
 
 > WebExtension module: Browser-action context menu to request permission for the current tab.
 
