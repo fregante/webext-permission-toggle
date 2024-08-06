@@ -29,6 +29,7 @@
 		"build": "tsc",
 		"demo:build": "parcel build --no-cache",
 		"demo:watch": "parcel watch --no-cache --no-hmr",
+		"docs:watch": "cd docs && npx browser-sync start --server --watch",
 		"prepack": "tsc --sourceMap false",
 		"test": "xo && tsc --noEmit",
 		"watch": "tsc --watch"
