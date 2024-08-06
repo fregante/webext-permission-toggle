@@ -8,7 +8,7 @@ body {
 	width: 480px;
 	margin: 20px auto;
 	padding: 20px;
-	background: linear-gradient(var(--bg-fade), var(--bg-color) 100px) no-repeat;
+	background: var(--bg-color) linear-gradient(var(--bg-fade), var(--bg-color) 100px) no-repeat;
 }
 h1 {
 	font-weight: 200;
