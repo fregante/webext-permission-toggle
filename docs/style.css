@@ -109,7 +109,7 @@ ol li:before {
 }
 .button.focused {
 	background-color: #eeeeee;
-	/* animation: background-fade 200ms 1.5s backwards; */
+	animation: background-fade 200ms 1.5s backwards;
 }
 .button.focused svg {
 	filter: drop-shadow(0px 0px 1px white) drop-shadow(0px 0px 1px white);
@@ -132,7 +132,7 @@ ol li:before {
 		0px 0px 1px rgba(0, 0, 0, 50%),
 		0 10px 25px 5px rgba(0, 0, 0, 30%);
 	transform-origin: top left;
-	/* animation: openmenu 100ms 2s backwards; */
+	animation: openmenu 100ms 2s backwards;
 }
 .menuitem {
 	font-size: 13px;
@@ -140,7 +140,7 @@ ol li:before {
 }
 .menuitem.focused {
 	background-color: #f2f2f2;
-	/* animation: menuitem 1s 2.5s backwards; */
+	animation: menuitem 1s 2.5s backwards;
 }
 .separator {
 	border: solid transparent;
