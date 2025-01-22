@@ -199,7 +199,7 @@ async function handleClick(
  *
  * @param options {Options}
  */
-export default function addPermissionToggle(options?: Options): void {
+export default async function addPermissionToggle(options?: Options): Promise<void> {
 	if (!isBackground()) {
 		throw new Error('webext-permission-toggle can only be called from a background page');
 	}
@@ -233,17 +233,6 @@ export default function addPermissionToggle(options?: Options): void {
 		? ['page_action', 'browser_action']
 		: ['action'];
 
-	void createContextMenu({
-		id: contextMenuId,
-		type: 'checkbox',
-		checked: false,
-		title: globalOptions.title,
-		contexts,
-
-		// Note: This is completely ignored by Chrome and Safari. Great. #14
-		documentUrlPatterns: optionalHosts,
-	});
-
 	chrome.contextMenus.onClicked.addListener(handleClick);
 	chrome.tabs.onActivated.addListener(handleTabActivated);
 	// Chrome won't fire `onFocusChanged` if the window is clicked when a context menu is open
@@ -253,5 +242,16 @@ export default function addPermissionToggle(options?: Options): void {
 		if (active && status === 'complete') {
 			void updateItem(url ?? await getTabUrl(tabId) ?? '');
 		}
+	});
+
+	await createContextMenu({
+		id: contextMenuId,
+		type: 'checkbox',
+		checked: false,
+		title: globalOptions.title,
+		contexts,
+
+		// Note: This is completely ignored by Chrome and Safari. Great. #14
+		documentUrlPatterns: optionalHosts,
 	});
 }
