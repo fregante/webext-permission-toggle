@@ -54,7 +54,7 @@ async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 }
 
 function updateItemRaw({checked, enabled}: chrome.contextMenus.UpdateProperties): void {
-	chrome.contextMenus.update(contextMenuId, {
+	void chrome.contextMenus.update(contextMenuId, {
 		checked,
 		enabled,
 	});
@@ -179,7 +179,7 @@ async function handleClick(
 				await executeFunction(
 					tab.id,
 					text => {
-						window.alert(text); /* Can't pass a raw native function */
+						globalThis.alert(text); /* Can't pass a raw native function */
 					},
 					String(error),
 				);
