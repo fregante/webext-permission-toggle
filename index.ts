@@ -238,7 +238,7 @@ export default function addPermissionToggle(options?: Options): void {
 	chrome.tabs.onActivated.addListener(handleTabActivated);
 	// Chrome won't fire `onFocusChanged` if the window is clicked when a context menu is open
 	// https://github.com/fregante/webext-permission-toggle/pull/60
-	chrome.windows.onFocusChanged.addListener(handleWindowFocusChanged, {windowTypes: ['normal']});
+	chrome.windows.onFocusChanged.addListener(handleWindowFocusChanged);
 	chrome.tabs.onUpdated.addListener(async (tabId, {status}, {url, active}) => {
 		if (active && status === 'complete') {
 			void updateItem(url ?? await getTabUrl(tabId) ?? '');
