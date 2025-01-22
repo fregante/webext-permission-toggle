@@ -2,7 +2,7 @@ import chromePromised from 'webext-polyfill-kinda';
 import {isBackground, isChrome} from 'webext-detect';
 import {isUrlPermittedByManifest} from 'webext-permissions';
 import {findMatchingPatterns} from 'webext-patterns';
-import {getTabUrl} from 'webext-tools';
+import {createContextMenu, getTabUrl} from 'webext-tools';
 import alert from 'webext-alert';
 import {executeFunction, isScriptableUrl} from 'webext-content-scripts';
 
@@ -211,19 +211,6 @@ export default function addPermissionToggle(options?: Options): void {
 
 	const manifest = chrome.runtime.getManifest();
 
-	if (!chrome.contextMenus) {
-		if (
-			!manifest.permissions?.includes('contextMenus')
-			// Disable setup error on Firefox Android
-			&& !/Android.+Firefox\//.test(navigator.userAgent)
-		) {
-			throw new Error('webext-permission-toggle requires the `contextMenus` permission');
-		}
-
-		console.warn('chrome.contextMenus is not available');
-		return;
-	}
-
 	globalOptions = {
 		title: `Enable ${manifest.name} on this domain`,
 		reloadOnSuccess: false,
@@ -243,23 +230,9 @@ export default function addPermissionToggle(options?: Options): void {
 		throw new TypeError('webext-permission-toggle requires some wildcard hosts to be specified in `optional_permissions` (MV2) or `optional_host_permissions` (MV3)');
 	}
 
-	// Remove any existing context menu item and silence any error
-	chrome.contextMenus.remove(contextMenuId, () => chrome.runtime.lastError);
-
 	const contexts: chrome.contextMenus.ContextType[] = manifest.manifest_version === 2
 		? ['page_action', 'browser_action']
 		: ['action'];
-
-	chrome.contextMenus.create({
-		id: contextMenuId,
-		type: 'checkbox',
-		checked: false,
-		title: globalOptions.title,
-		contexts,
-
-		// Note: This is completely ignored by Chrome and Safari. Great. #14
-		documentUrlPatterns: optionalHosts,
-	});
 
 	chrome.contextMenus.onClicked.addListener(handleClick);
 	chrome.tabs.onActivated.addListener(handleTabActivated);
@@ -270,5 +243,16 @@ export default function addPermissionToggle(options?: Options): void {
 		if (active && status === 'complete') {
 			void updateItem(url ?? await getTabUrl(tabId) ?? '');
 		}
+	});
+
+	void createContextMenu({
+		id: contextMenuId,
+		type: 'checkbox',
+		checked: false,
+		title: globalOptions.title,
+		contexts,
+
+		// Note: This is completely ignored by Chrome and Safari. Great. #14
+		documentUrlPatterns: optionalHosts,
 	});
 }
