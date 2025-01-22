@@ -199,7 +199,7 @@ async function handleClick(
  *
  * @param options {Options}
  */
-export default async function addPermissionToggle(options?: Options): Promise<void> {
+export default function addPermissionToggle(options?: Options): void {
 	if (!isBackground()) {
 		throw new Error('webext-permission-toggle can only be called from a background page');
 	}
@@ -244,7 +244,7 @@ export default async function addPermissionToggle(options?: Options): Promise<vo
 		}
 	});
 
-	await createContextMenu({
+	void createContextMenu({
 		id: contextMenuId,
 		type: 'checkbox',
 		checked: false,
