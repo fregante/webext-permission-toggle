@@ -176,6 +176,7 @@ async function handleClick(
 
 		if (tab?.id) {
 			try {
+				// TODO: Drop after https://github.com/fregante/webext-alert/issues/2
 				await executeFunction(
 					tab.id,
 					text => {
