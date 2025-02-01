@@ -252,7 +252,8 @@ export default function addPermissionToggle(options?: Options): void {
 		title: globalOptions.title,
 		contexts,
 
-		// Note: This is completely ignored by Chrome and Safari. Great. #14
+		// Note: This is completely ignored by Chrome #14
+		// https://github.com/w3c/webextensions/issues/755#issuecomment-2628772400
 		documentUrlPatterns: optionalHosts,
 	});
 }
