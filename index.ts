@@ -141,7 +141,6 @@ async function handleClick(
 	{checked, menuItemId}: chrome.contextMenus.OnClickData,
 	tab?: chrome.tabs.Tab,
 ): Promise<void> {
-	console.log(arguments)
 	if (menuItemId !== contextMenuId) {
 		return;
 	}
