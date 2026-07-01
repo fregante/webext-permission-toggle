@@ -45,19 +45,18 @@
 		}
 	},
 	"dependencies": {
-		"webext-alert": "^1.0.3",
-		"webext-content-scripts": "^2.7.2",
+		"webext-alert": "^1.1.0",
+		"webext-content-scripts": "^2.8.0",
 		"webext-detect": "^5.3.2",
 		"webext-patterns": "^1.5.0",
 		"webext-permissions": "^3.1.4",
-		"webext-polyfill-kinda": "^1.0.2",
-		"webext-tools": "^3.0.0"
+		"webext-tools": "^4.0.2"
 	},
 	"devDependencies": {
 		"@parcel/config-webextension": "^2.13.3",
 		"@parcel/transformer-webextension": "^2.13.3",
 		"@sindresorhus/tsconfig": "^7.0.0",
-		"@types/chrome": "^0.0.299",
+		"@types/chrome": "^0.2.0",
 		"parcel": "^2.13.3",
 		"typescript": "^5.7.3",
 		"xo": "^0.60.0"
@@ -70,26 +69,17 @@
 	},
 	"targets": {
 		"main": false,
-		"mv2": {
-			"engines": {
-				"browsers": "last 2 Chrome versions"
-			},
-			"source": "demo/mv2/manifest.json",
-			"sourceMap": {
-				"inline": true
-			}
-		},
 		"mv3": {
 			"engines": {
 				"browsers": "last 2 Chrome versions"
 			},
-			"source": "demo/mv3/manifest.json",
+			"source": "demo/manifest.json",
 			"sourceMap": {
 				"inline": true
 			}
 		}
 	},
 	"webExt": {
-		"sourceDir": "dist/mv3"
+		"sourceDir": "dist"
 	}
 }
