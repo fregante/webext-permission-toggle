@@ -1,17 +1,13 @@
-import chromePromised from 'webext-polyfill-kinda';
-import {isBackground, isChrome} from 'webext-detect';
+import {isBackground} from 'webext-detect';
 import {isUrlPermittedByManifest} from 'webext-permissions';
 import {findMatchingPatterns} from 'webext-patterns';
-import {createContextMenu, getTabUrl} from 'webext-tools';
+import createContextMenu from 'webext-tools/create-context-menu.js';
+import getTabUrl from 'webext-tools/get-tab-url.js';
 import alert from 'webext-alert';
 import {executeFunction, isScriptableUrl} from 'webext-content-scripts';
 
 const contextMenuId = 'webext-permission-toggle:add-permission';
 let globalOptions: Options;
-
-const chromeP = isChrome() && globalThis.chrome?.runtime?.getManifest().manifest_version < 3
-	? chromePromised
-	: globalThis.chrome;
 
 type Options = {
 	/**
@@ -48,12 +44,12 @@ function assertScriptableUrl(url: string): void {
 }
 
 async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
-	return chromeP.permissions.contains({
+	return chrome.permissions.contains({
 		origins: [origin + '/*'],
 	});
 }
 
-function updateItemRaw({checked, enabled}: chrome.contextMenus.UpdateProperties): void {
+function updateItemRaw({checked, enabled}: chrome.contextMenus.CreateProperties): void {
 	void chrome.contextMenus.update(contextMenuId, {
 		checked,
 		enabled,
@@ -108,28 +104,28 @@ async function setPermission(url: string, request: boolean): Promise<boolean> {
 	};
 
 	if (request) {
-		await chromeP.permissions.request(permissionData);
+		await chrome.permissions.request(permissionData);
 	} else {
 		// The user, browser or extension might have granted permissions broader than the exact origin we find here.
 		// https://github.com/fregante/webext-permission-toggle/issues/37
 		// This might also remove a `*://*/*` permission if granted, which might unexpected but "technically correct" since, after this successful removal, the extension will no longer have access to the current domain, as requested.
-		const {origins = []} = await chromeP.permissions.getAll();
+		const {origins = []} = await chrome.permissions.getAll();
 		const matchingPatterns = findMatchingPatterns(url, ...origins);
 		console.debug('Removing permissions:', ...matchingPatterns);
-		await chromeP.permissions.remove({
+		await chrome.permissions.remove({
 			origins: matchingPatterns,
 		});
 	}
 
-	return chromeP.permissions.contains(permissionData);
+	return chrome.permissions.contains(permissionData);
 }
 
-async function handleTabActivated({tabId}: chrome.tabs.TabActiveInfo): Promise<void> {
+async function handleTabActivated({tabId}: chrome.tabs.OnActivatedInfo): Promise<void> {
 	void updateItem(await getTabUrl(tabId) ?? '');
 }
 
 async function handleWindowFocusChanged(windowId: number): Promise<void> {
-	const [tab] = await chromeP.tabs.query({
+	const [tab] = await chrome.tabs.query({
 		active: true,
 		windowId,
 	});
@@ -227,12 +223,8 @@ export default function addPermissionToggle(options?: Options): void {
 	].filter((permission: string) => permission === '<all_urls>' || permission.includes('*'));
 
 	if (optionalHosts.length === 0) {
-		throw new TypeError('webext-permission-toggle requires some wildcard hosts to be specified in `optional_permissions` (MV2) or `optional_host_permissions` (MV3)');
+		throw new TypeError('webext-permission-toggle requires some wildcard hosts to be specified `optional_host_permissions`');
 	}
-
-	const contexts: chrome.contextMenus.ContextType[] = manifest.manifest_version === 2
-		? ['page_action', 'browser_action']
-		: ['action'];
 
 	chrome.tabs.onActivated.addListener(handleTabActivated);
 	// Chrome won't fire `onFocusChanged` if the window is clicked when a context menu is open
@@ -249,7 +241,7 @@ export default function addPermissionToggle(options?: Options): void {
 		type: 'checkbox',
 		checked: false,
 		title: globalOptions.title,
-		contexts,
+		contexts: ['action'],
 		onclick: handleClick,
 
 		// Note: This is completely ignored by Chrome #14

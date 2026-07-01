@@ -1,4 +1,3 @@
-import chromeP from 'webext-polyfill-kinda';
 import addPermissionToggle from 'webext-permission-toggle';
 
 console.log('Extension ready. Reload any tab to see the logs.');
@@ -6,16 +5,20 @@ console.log('Extension ready. Reload any tab to see the logs.');
 addPermissionToggle();
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-	if (!tab.url) {
-		console.log('No access to tab', tabId);
+	if (changeInfo.status !== 'loading') {
 		return;
 	}
 
-	const why = await chromeP.permissions.contains({origins: [tab.url]}) ? 'granted' : 'just because of activeTab';
+	if (!tab.url) {
+		console.log('No access to tab', tab);
+		return;
+	}
+
+	const why = await chrome.permissions.contains({origins: [tab.url]}) ? 'granted' : 'just because of activeTab';
 	console.log('Access to tab', tabId, tab.url, why);
 });
 
-(chrome.action ?? chrome.browserAction).onClicked.addListener(async () => chromeP.permissions.request({origins: ['*://*/*']}));
+chrome.action.onClicked.addListener(async () => chrome.permissions.request({origins: ['*://*/*']}));
 
 chrome.permissions.onAdded.addListener(permissions => console.log('Permissions added:', permissions));
 chrome.permissions.onRemoved.addListener(permissions => console.log('Permissions removed:', permissions));

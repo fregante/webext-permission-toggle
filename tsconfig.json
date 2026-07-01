@@ -1,10 +1,12 @@
 {
 	"extends": "@sindresorhus/tsconfig",
 	"compilerOptions": {
-		"outDir": "."
+		"outDir": ".",
+		"types":[
+			"chrome"
+		]
 	},
 	"files": [
-		"index.ts",
-		"globals.d.ts"
+		"index.ts"
 	]
 }
