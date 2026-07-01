@@ -141,6 +141,7 @@ async function handleClick(
 	{checked, menuItemId}: chrome.contextMenus.OnClickData,
 	tab?: chrome.tabs.Tab,
 ): Promise<void> {
+	console.log(arguments)
 	if (menuItemId !== contextMenuId) {
 		return;
 	}
@@ -234,7 +235,6 @@ export default function addPermissionToggle(options?: Options): void {
 		? ['page_action', 'browser_action']
 		: ['action'];
 
-	chrome.contextMenus.onClicked.addListener(handleClick);
 	chrome.tabs.onActivated.addListener(handleTabActivated);
 	// Chrome won't fire `onFocusChanged` if the window is clicked when a context menu is open
 	// https://github.com/fregante/webext-permission-toggle/pull/60
@@ -251,6 +251,7 @@ export default function addPermissionToggle(options?: Options): void {
 		checked: false,
 		title: globalOptions.title,
 		contexts,
+		onclick: handleClick,
 
 		// Note: This is completely ignored by Chrome #14
 		// https://github.com/w3c/webextensions/issues/755#issuecomment-2628772400
