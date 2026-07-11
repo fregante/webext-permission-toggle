@@ -1,7 +1,7 @@
 import {isBackground} from 'webext-detect';
 import {isUrlPermittedByManifest} from 'webext-permissions';
 import {findMatchingPatterns} from 'webext-patterns';
-import createContextMenu from 'webext-tools/create-context-menu.js';
+import createContextMenu, {notifyOfMissingPermissions} from 'webext-tools/create-context-menu.js';
 import getTabUrl from 'webext-tools/get-tab-url.js';
 import alert from 'webext-alert';
 import {executeFunction, isScriptableUrl} from 'webext-content-scripts';
@@ -205,6 +205,11 @@ export default function addPermissionToggle(options?: Options): void {
 		throw new Error('webext-permission-toggle can only be initialized once');
 	}
 
+	if (!chrome.contextMenus) {
+		notifyOfMissingPermissions();
+		return;
+	}
+
 	const manifest = chrome.runtime.getManifest();
 
 	globalOptions = {
@@ -229,7 +234,8 @@ export default function addPermissionToggle(options?: Options): void {
 	chrome.tabs.onActivated.addListener(handleTabActivated);
 	// Chrome won't fire `onFocusChanged` if the window is clicked when a context menu is open
 	// https://github.com/fregante/webext-permission-toggle/pull/60
-	chrome.windows.onFocusChanged.addListener(handleWindowFocusChanged);
+	// Ignore if chrome.windows isn't defined
+	chrome.windows?.onFocusChanged.addListener(handleWindowFocusChanged);
 	chrome.tabs.onUpdated.addListener(async (tabId, {status}, {url, active}) => {
 		if (active && status === 'complete') {
 			void updateItem(url ?? await getTabUrl(tabId) ?? '');
