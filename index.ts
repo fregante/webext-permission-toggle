@@ -255,3 +255,11 @@ export default function addPermissionToggle(options?: Options): void {
 		documentUrlPatterns: optionalHosts,
 	});
 }
+
+export function hasRequiredPermissions(): boolean {
+	const manifest = chrome.runtime.getManifest();
+	return chrome.contextMenus && [
+		...manifest.optional_permissions ?? [],
+		...manifest.optional_host_permissions as string[] ?? [],
+	].some((permission: string) => permission === '<all_urls>' || permission.includes('*'));
+}
