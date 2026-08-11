@@ -189,6 +189,13 @@ async function handleClick(
 	}
 }
 
+function getOptionalHosts(manifest = chrome.runtime.getManifest()): string[] {
+	return [
+		...manifest.optional_permissions ?? [],
+		...manifest.optional_host_permissions as string[] ?? [],
+	].filter((permission: string) => permission === '<all_urls>' || permission.includes('*'));
+}
+
 /**
  * Adds an item to the browser action icon's context menu.
  * The user can access this menu by right clicking the icon. If your extension doesn't have any action or
@@ -222,11 +229,7 @@ export default function addPermissionToggle(options?: Options): void {
 		globalOptions.reloadOnSuccess = `Do you want to reload this page to apply ${manifest.name}?`;
 	}
 
-	const optionalHosts = [
-		...manifest.optional_permissions ?? [],
-		...manifest.optional_host_permissions as string[] ?? [],
-	].filter((permission: string) => permission === '<all_urls>' || permission.includes('*'));
-
+	const optionalHosts = getOptionalHosts();
 	if (optionalHosts.length === 0) {
 		throw new TypeError('webext-permission-toggle requires some wildcard hosts to be specified `optional_host_permissions`');
 	}
@@ -257,9 +260,5 @@ export default function addPermissionToggle(options?: Options): void {
 }
 
 export function hasRequiredPermissions(): boolean {
-	const manifest = chrome.runtime.getManifest();
-	return chrome.contextMenus && [
-		...manifest.optional_permissions ?? [],
-		...manifest.optional_host_permissions as string[] ?? [],
-	].some((permission: string) => permission === '<all_urls>' || permission.includes('*'));
+	return chrome.contextMenus && getOptionalHosts().length > 0;
 }
