@@ -5,7 +5,7 @@
 > WebExtension module: Browser-action context menu to request permission for the current tab.
 
 - Browsers: Chrome, Firefox, and Safari
-- Manifest: v2 and v3
+- Manifest: v3
 
 _This package was recently renamed from `webext-domain-permission-toggle` to `webext-permission-toggle`_
 
@@ -34,7 +34,7 @@ import addPermissionToggle from 'webext-permission-toggle';
 addPermissionToggle();
 ```
 
-### manifest.json v3
+### manifest.json
 
 ```js
 // example background.worker.js
@@ -58,30 +58,6 @@ navigator.importScripts(
 	],
 	"background": {
 		"service_worker": "background.worker.js"
-	}
-}
-```
-
-### manifest.json v2
-
-```js
-{
-	"version": 2,
-	"browser_action": { /* Firefox support */
-		"default_icon": "icon.png"
-	},
-	"permissions": [
-		"contextMenus",
-		"activeTab"
-	],
-	"optional_permissions": [
-		"*://*/*"
-	],
-	"background": {
-		"scripts": [
-			"webext-permission-toggle.js",
-			"background.js"
-		]
 	}
 }
 ```
