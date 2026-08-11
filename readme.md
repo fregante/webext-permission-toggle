@@ -92,6 +92,10 @@ Default: `false`
 
 If `true` or `string`, when the user accepts the new permission, they will be asked to reload the current tab. Set a `string` to customize the message or `true` use the default message: `Do you want to reload this page to apply ${extensionName}?`
 
+### hasRequiredPermissions()
+
+Utility function to pre-check for permissions. `addPermissionToggle` already does this internally and throws errors if the extension is misconfigured.
+
 ## Related
 
 - [webext-dynamic-content-scripts](https://github.com/fregante/webext-dynamic-content-scripts) - Automatically registers your content_scripts on hosts added via `permission.request()`

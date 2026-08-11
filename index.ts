@@ -189,6 +189,13 @@ async function handleClick(
 	}
 }
 
+function getOptionalHosts(manifest = chrome.runtime.getManifest()): string[] {
+	return [
+		...manifest.optional_permissions ?? [],
+		...manifest.optional_host_permissions as string[] ?? [],
+	].filter((permission: string) => permission === '<all_urls>' || permission.includes('*'));
+}
+
 /**
  * Adds an item to the browser action icon's context menu.
  * The user can access this menu by right clicking the icon. If your extension doesn't have any action or
@@ -212,6 +219,11 @@ export default function addPermissionToggle(options?: Options): void {
 
 	const manifest = chrome.runtime.getManifest();
 
+	const optionalHosts = getOptionalHosts(manifest);
+	if (optionalHosts.length === 0) {
+		throw new TypeError('webext-permission-toggle requires some wildcard hosts to be specified `optional_host_permissions`');
+	}
+
 	globalOptions = {
 		title: `Enable ${manifest.name} on this domain`,
 		reloadOnSuccess: false,
@@ -220,15 +232,6 @@ export default function addPermissionToggle(options?: Options): void {
 
 	if (globalOptions.reloadOnSuccess === true) {
 		globalOptions.reloadOnSuccess = `Do you want to reload this page to apply ${manifest.name}?`;
-	}
-
-	const optionalHosts = [
-		...manifest.optional_permissions ?? [],
-		...manifest.optional_host_permissions as string[] ?? [],
-	].filter((permission: string) => permission === '<all_urls>' || permission.includes('*'));
-
-	if (optionalHosts.length === 0) {
-		throw new TypeError('webext-permission-toggle requires some wildcard hosts to be specified `optional_host_permissions`');
 	}
 
 	chrome.tabs.onActivated.addListener(handleTabActivated);
@@ -254,4 +257,8 @@ export default function addPermissionToggle(options?: Options): void {
 		// https://github.com/w3c/webextensions/issues/755#issuecomment-2628772400
 		documentUrlPatterns: optionalHosts,
 	});
+}
+
+export function hasRequiredPermissions(): boolean {
+	return Boolean(chrome.contextMenus && getOptionalHosts().length > 0);
 }
