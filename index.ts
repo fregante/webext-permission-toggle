@@ -229,7 +229,7 @@ export default function addPermissionToggle(options?: Options): void {
 		globalOptions.reloadOnSuccess = `Do you want to reload this page to apply ${manifest.name}?`;
 	}
 
-	const optionalHosts = getOptionalHosts();
+	const optionalHosts = getOptionalHosts(manifest);
 	if (optionalHosts.length === 0) {
 		throw new TypeError('webext-permission-toggle requires some wildcard hosts to be specified `optional_host_permissions`');
 	}
@@ -260,5 +260,5 @@ export default function addPermissionToggle(options?: Options): void {
 }
 
 export function hasRequiredPermissions(): boolean {
-	return chrome.contextMenus && getOptionalHosts().length > 0;
+	return Boolean(chrome.contextMenus && getOptionalHosts().length > 0);
 }
