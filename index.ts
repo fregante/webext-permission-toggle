@@ -219,6 +219,11 @@ export default function addPermissionToggle(options?: Options): void {
 
 	const manifest = chrome.runtime.getManifest();
 
+	const optionalHosts = getOptionalHosts(manifest);
+	if (optionalHosts.length === 0) {
+		throw new TypeError('webext-permission-toggle requires some wildcard hosts to be specified `optional_host_permissions`');
+	}
+
 	globalOptions = {
 		title: `Enable ${manifest.name} on this domain`,
 		reloadOnSuccess: false,
@@ -227,11 +232,6 @@ export default function addPermissionToggle(options?: Options): void {
 
 	if (globalOptions.reloadOnSuccess === true) {
 		globalOptions.reloadOnSuccess = `Do you want to reload this page to apply ${manifest.name}?`;
-	}
-
-	const optionalHosts = getOptionalHosts(manifest);
-	if (optionalHosts.length === 0) {
-		throw new TypeError('webext-permission-toggle requires some wildcard hosts to be specified `optional_host_permissions`');
 	}
 
 	chrome.tabs.onActivated.addListener(handleTabActivated);
