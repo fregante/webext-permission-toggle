@@ -125,6 +125,10 @@ async function handleTabActivated({tabId}: chrome.tabs.OnActivatedInfo): Promise
 }
 
 async function handleWindowFocusChanged(windowId: number): Promise<void> {
+	if (windowId === chrome.windows.WINDOW_ID_NONE) {
+		return;
+	}
+
 	const [tab] = await chrome.tabs.query({
 		active: true,
 		windowId,
