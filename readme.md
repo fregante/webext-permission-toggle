@@ -92,6 +92,14 @@ Default: `false`
 
 If `true` or `string`, when the user accepts the new permission, they will be asked to reload the current tab. Set a `string` to customize the message or `true` use the default message: `Do you want to reload this page to apply ${extensionName}?`
 
+##### additionalPermissions
+
+Type: `string[]`
+
+Default: `[]`
+
+Additional regular permissions to request together with the host permission, for example `['webNavigation']`. This is useful if your content scripts rely on `webNavigation` events to inject on newly-enabled hosts. The extra permissions are included in every request and are not removed when a domain is later disabled.
+
 ### hasRequiredPermissions()
 
 Utility function to pre-check for permissions. `addPermissionToggle` already does this internally and throws errors if the extension is misconfigured.
