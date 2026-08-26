@@ -20,6 +20,15 @@ type Options = {
 	 * Set a `string` to customize the message and `false` (default) to avoid the reload and its request.
 	 */
 	reloadOnSuccess?: string | boolean;
+
+	/**
+	 * Additional regular permissions to request together with the host permission,
+	 * for example `["webNavigation"]`. Useful when content scripts rely on
+	 * `webNavigation` events to inject reliably on newly-enabled hosts.
+	 *
+	 * They are never automatically removed when a domain is disabled.
+	 */
+	additionalPermissions?: string[];
 };
 
 function assertTab(tab: chrome.tabs.Tab | undefined):
@@ -97,11 +106,16 @@ async function updateItem(url?: string): Promise<void> {
  * @returns Whether the permission exists after the request/removal
  */
 async function setPermission(url: string, request: boolean): Promise<boolean> {
-	const permissionData = {
+	const permissionData: chrome.permissions.Permissions = {
 		origins: [
 			new URL(url).origin + '/*',
 		],
 	};
+
+	if (globalOptions.additionalPermissions?.length) {
+		// Cast required: the manifest types only know released permission names
+		permissionData.permissions = globalOptions.additionalPermissions as chrome.runtime.ManifestPermission[];
+	}
 
 	if (request) {
 		await chrome.permissions.request(permissionData);
@@ -117,7 +131,11 @@ async function setPermission(url: string, request: boolean): Promise<boolean> {
 		});
 	}
 
-	return chrome.permissions.contains(permissionData);
+	// Only the origin decides the toggle state. `additionalPermissions` ride along
+	// with the request but aren't its success condition.
+	return chrome.permissions.contains({
+		origins: [new URL(url).origin + '/*'],
+	});
 }
 
 async function handleTabActivated({tabId}: chrome.tabs.OnActivatedInfo): Promise<void> {
