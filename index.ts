@@ -1,23 +1,23 @@
 import {isBackground} from 'webext-detect';
 import {isUrlPermittedByManifest} from 'webext-permissions';
-import {findMatchingPatterns} from 'webext-patterns';
+import {getMatchingPatterns} from 'webext-patterns';
 import createContextMenu, {notifyOfMissingPermissions} from 'webext-tools/create-context-menu.js';
 import getTabUrl from 'webext-tools/get-tab-url.js';
 import alert from 'webext-alert';
-import {executeFunction, isScriptableUrl} from 'webext-content-scripts';
+import {isScriptableUrl} from 'webext-content-scripts';
 
 const contextMenuId = 'webext-permission-toggle:add-permission';
 let globalOptions: Options;
 
 type Options = {
 	/**
-	 * The title of the action in the context menu.
+	 The title of the action in the context menu.
 	 */
 	title?: string;
 
 	/**
-	 * If the user accepts the new permission, they will be asked to reload the current tab.
-	 * Set a `string` to customize the message and `false` (default) to avoid the reload and its request.
+	 If the user accepts the new permission, they will be asked to reload the current tab.
+	 Set a `string` to customize the message and `false` (default) to avoid the reload and its request.
 	 */
 	reloadOnSuccess?: string | boolean;
 };
@@ -49,11 +49,11 @@ async function isOriginPermanentlyAllowed(origin: string): Promise<boolean> {
 	});
 }
 
-function updateItemRaw({checked, enabled}: chrome.contextMenus.CreateProperties): void {
+function updateItemRaw({checked, enabled}: {checked?: boolean; enabled?: boolean}): void {
 	void chrome.contextMenus.update(contextMenuId, {
 		checked,
 		enabled,
-	});
+	}); // Types require `title` even though it's not required
 }
 
 async function updateItem(url?: string): Promise<void> {
@@ -93,8 +93,8 @@ async function updateItem(url?: string): Promise<void> {
 }
 
 /**
- * Requests or removes the host permission for the specified tab
- * @returns Whether the permission exists after the request/removal
+ Requests or removes the host permission for the specified tab
+ @returns Whether the permission exists after the request/removal
  */
 async function setPermission(url: string, request: boolean): Promise<boolean> {
 	const permissionData = {
@@ -110,7 +110,7 @@ async function setPermission(url: string, request: boolean): Promise<boolean> {
 		// https://github.com/fregante/webext-permission-toggle/issues/37
 		// This might also remove a `*://*/*` permission if granted, which might unexpected but "technically correct" since, after this successful removal, the extension will no longer have access to the current domain, as requested.
 		const {origins = []} = await chrome.permissions.getAll();
-		const matchingPatterns = findMatchingPatterns(url, ...origins);
+		const matchingPatterns = getMatchingPatterns(url, origins);
 		console.debug('Removing permissions:', ...matchingPatterns);
 		await chrome.permissions.remove({
 			origins: matchingPatterns,
@@ -153,21 +153,25 @@ async function handleClick(
 		url = tab.url || await getTabUrl(tab.id);
 		assertUrl(url);
 		assertScriptableUrl(url);
-		const permissionExistsNow = await setPermission(url, checked!);
-		const settingWasSuccessful = permissionExistsNow === checked;
+		const isPermissionExistsNow = await setPermission(url, checked!);
+		const isSettingWasSuccessful = isPermissionExistsNow === checked;
 		// If successful, Chrome already natively updated the context menu item.
-		if (!settingWasSuccessful) {
+		if (!isSettingWasSuccessful) {
 			updateItemRaw({
-				checked: permissionExistsNow,
+				checked: isPermissionExistsNow,
 			});
 		}
 
-		if (permissionExistsNow && globalOptions.reloadOnSuccess) {
-			void executeFunction(tab.id, (message: string) => {
-				if (confirm(message)) {
-					location.reload();
-				}
-			}, globalOptions.reloadOnSuccess);
+		if (isPermissionExistsNow && globalOptions.reloadOnSuccess) {
+			void chrome.scripting.executeScript({
+				target: {tabId: tab.id},
+				func(message: string) {
+					if (confirm(message)) {
+						location.reload();
+					}
+				},
+				args: [String(globalOptions.reloadOnSuccess)],
+			});
 		}
 	} catch (error) {
 		// Delay updating the context menu item because of spurious events and activeTab race conditions
@@ -177,13 +181,13 @@ async function handleClick(
 		if (tab?.id) {
 			try {
 				// TODO: Drop after https://github.com/fregante/webext-alert/issues/2
-				await executeFunction(
-					tab.id,
-					text => {
+				await chrome.scripting.executeScript({
+					target: {tabId: tab.id},
+					func(text: string) {
 						globalThis.alert(text); /* Can't pass a raw native function */
 					},
-					String(error),
-				);
+					args: [String(error)],
+				});
 			} catch {
 				void alert(String(error));
 			}
@@ -201,11 +205,11 @@ function getOptionalHosts(manifest = chrome.runtime.getManifest()): string[] {
 }
 
 /**
- * Adds an item to the browser action icon's context menu.
- * The user can access this menu by right clicking the icon. If your extension doesn't have any action or
- * popup assigned to the icon, it will also appear with a left click.
- *
- * @param options {Options}
+ Adds an item to the browser action icon's context menu.
+ The user can access this menu by right clicking the icon. If your extension doesn't have any action or
+ popup assigned to the icon, it will also appear with a left click.
+
+ @param options {Options}
  */
 export default function addPermissionToggle(options?: Options): void {
 	if (!isBackground()) {
@@ -264,5 +268,5 @@ export default function addPermissionToggle(options?: Options): void {
 }
 
 export function hasRequiredPermissions(): boolean {
-	return Boolean(chrome.contextMenus && getOptionalHosts().length > 0);
+	return getOptionalHosts().length > 0 && chrome.contextMenus !== undefined;
 }
