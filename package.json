@@ -42,8 +42,8 @@
 	],
 	"dependencies": {
 		"webext-alert": "^1.1.0",
-		"webext-content-scripts": "^3.0.0",
-		"webext-detect": "^6.0.0",
+		"webext-content-scripts": "^3.1.0",
+		"webext-detect": "^6.1.0",
 		"webext-patterns": "^3.0.0",
 		"webext-permissions": "^6.0.0",
 		"webext-tools": "^4.1.2"
@@ -51,7 +51,7 @@
 	"devDependencies": {
 		"@parcel/config-webextension": "^2.16.4",
 		"@parcel/transformer-webextension": "^2.16.4",
-		"@sindresorhus/tsconfig": "^8.1.0",
+		"@sindresorhus/tsconfig": "^9.0.0",
 		"@types/chrome": "^0.3.6",
 		"globals": "^17.13.0",
 		"parcel": "^2.16.4",
