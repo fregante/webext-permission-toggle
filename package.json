@@ -41,7 +41,7 @@
 		"webextension"
 	],
 	"dependencies": {
-		"webext-alert": "^1.1.0",
+		"webext-alert": "^2.0.1",
 		"webext-content-scripts": "^3.1.0",
 		"webext-detect": "^6.1.0",
 		"webext-patterns": "^3.0.0",

@@ -3,7 +3,7 @@ import {isUrlPermittedByManifest} from 'webext-permissions';
 import {getMatchingPatterns} from 'webext-patterns';
 import createContextMenu, {notifyOfMissingPermissions} from 'webext-tools/create-context-menu.js';
 import getTabUrl from 'webext-tools/get-tab-url.js';
-import alert from 'webext-alert';
+import {alert} from 'webext-alert';
 import {isScriptableUrl} from 'webext-content-scripts';
 
 const contextMenuId = 'webext-permission-toggle:add-permission';
@@ -178,20 +178,7 @@ async function handleClick(
 		// https://github.com/fregante/webext-permission-toggle/pull/45
 		setTimeout(updateItem, 500, url);
 
-		if (tab?.id) {
-			try {
-				// TODO: Drop after https://github.com/fregante/webext-alert/issues/2
-				await chrome.scripting.executeScript({
-					target: {tabId: tab.id},
-					func(text: string) {
-						globalThis.alert(text); /* Can't pass a raw native function */
-					},
-					args: [String(error)],
-				});
-			} catch {
-				void alert(String(error));
-			}
-		}
+		void alert(String(error));
 
 		throw error;
 	}
