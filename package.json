@@ -2,6 +2,32 @@
 	"name": "webext-permission-toggle",
 	"version": "7.1.1",
 	"description": "Browser-action context menu to request permission for the current tab. Chrome, Firefox, Safari.",
+	"license": "MIT",
+	"repository": "fregante/webext-permission-toggle",
+	"funding": "https://github.com/sponsors/fregante",
+	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
+	"type": "module",
+	"exports": {
+		"types": "./index.d.ts",
+		"default": "./index.js"
+	},
+	"sideEffects": false,
+	"engines": {
+		"node": ">=24"
+	},
+	"scripts": {
+		"build": "tsc",
+		"demo:build": "parcel build --no-cache",
+		"demo:watch": "parcel watch --no-cache --no-hmr",
+		"docs:watch": "cd docs && npx browser-sync start --server --watch",
+		"prepare": "tsc --sourceMap false",
+		"test": "xo && tsc --noEmit",
+		"watch": "tsc --watch"
+	},
+	"files": [
+		"index.js",
+		"index.d.ts"
+	],
 	"keywords": [
 		"browser",
 		"chrome",
@@ -14,55 +40,23 @@
 		"ui",
 		"webextension"
 	],
-	"repository": "fregante/webext-permission-toggle",
-	"funding": "https://github.com/sponsors/fregante",
-	"license": "MIT",
-	"author": "Federico Brigante <me@fregante.com> (https://fregante.com)",
-	"type": "module",
-	"exports": "./index.js",
-	"types": "./index.d.ts",
-	"files": [
-		"index.js",
-		"index.d.ts"
-	],
-	"scripts": {
-		"build": "tsc",
-		"demo:build": "parcel build --no-cache",
-		"demo:watch": "parcel watch --no-cache --no-hmr",
-		"docs:watch": "cd docs && npx browser-sync start --server --watch",
-		"prepack": "tsc --sourceMap false",
-		"test": "xo && tsc --noEmit",
-		"watch": "tsc --watch"
-	},
-	"xo": {
-		"envs": [
-			"browser",
-			"webextensions"
-		],
-		"rules": {
-			"no-alert": "off",
-			"n/no-unsupported-features/node-builtins": "off"
-		}
-	},
 	"dependencies": {
-		"webext-alert": "^1.1.0",
-		"webext-content-scripts": "^2.8.0",
-		"webext-detect": "^5.3.2",
-		"webext-patterns": "^1.5.0",
-		"webext-permissions": "^3.1.4",
-		"webext-tools": "^4.1.0"
+		"webext-alert": "^2.0.2",
+		"webext-content-scripts": "^3.1.0",
+		"webext-detect": "^6.1.0",
+		"webext-patterns": "^3.0.0",
+		"webext-permissions": "^6.0.0",
+		"webext-tools": "^4.1.2"
 	},
 	"devDependencies": {
-		"@parcel/config-webextension": "^2.13.3",
-		"@parcel/transformer-webextension": "^2.13.3",
-		"@sindresorhus/tsconfig": "^7.0.0",
-		"@types/chrome": "^0.2.0",
-		"parcel": "^2.13.3",
-		"typescript": "^5.7.3",
-		"xo": "^0.60.0"
-	},
-	"engines": {
-		"node": ">=16"
+		"@parcel/config-webextension": "^2.16.4",
+		"@parcel/transformer-webextension": "^2.16.4",
+		"@sindresorhus/tsconfig": "^9.0.0",
+		"@types/chrome": "^0.3.7",
+		"globals": "^17.13.0",
+		"parcel": "^2.16.4",
+		"typescript": "^6.0.3",
+		"xo": "^5.0.1"
 	},
 	"@parcel/resolver-default": {
 		"packageExports": true
