@@ -1,4 +1,9 @@
+/* eslint-disable n/no-extraneous-import, import-x/no-extraneous-dependencies -- Demo */
 import addPermissionToggle from 'webext-permission-toggle';
+import {localWebExtAlertHtml} from 'webext-alert';
+import localPage from 'url:webext-alert/page.html';
+
+localWebExtAlertHtml(localPage);
 
 console.log('Extension ready. Reload any tab to see the logs.');
 

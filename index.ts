@@ -3,7 +3,7 @@ import {isUrlPermittedByManifest} from 'webext-permissions';
 import {getMatchingPatterns} from 'webext-patterns';
 import createContextMenu, {notifyOfMissingPermissions} from 'webext-tools/create-context-menu.js';
 import getTabUrl from 'webext-tools/get-tab-url.js';
-import {alert} from 'webext-alert';
+import {alert, showErrors} from 'webext-alert';
 import {isScriptableUrl} from 'webext-content-scripts';
 
 const contextMenuId = 'webext-permission-toggle:add-permission';
@@ -178,8 +178,6 @@ async function handleClick(
 		// https://github.com/fregante/webext-permission-toggle/pull/45
 		setTimeout(updateItem, 500, url);
 
-		void alert(String(error));
-
 		throw error;
 	}
 }
@@ -246,7 +244,9 @@ export default function addPermissionToggle(options?: Options): void {
 		checked: false,
 		title: globalOptions.title,
 		contexts: ['action'],
-		onclick: handleClick,
+		onclick(...args) {
+			void showErrors(async () => handleClick(...args));
+		},
 
 		// Note: This is completely ignored by Chrome #14
 		// https://github.com/w3c/webextensions/issues/755#issuecomment-2628772400

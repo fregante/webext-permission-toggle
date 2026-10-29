@@ -41,7 +41,7 @@
 		"webextension"
 	],
 	"dependencies": {
-		"webext-alert": "^2.0.1",
+		"webext-alert": "^2.0.2",
 		"webext-content-scripts": "^3.1.0",
 		"webext-detect": "^6.1.0",
 		"webext-patterns": "^3.0.0",
@@ -52,7 +52,7 @@
 		"@parcel/config-webextension": "^2.16.4",
 		"@parcel/transformer-webextension": "^2.16.4",
 		"@sindresorhus/tsconfig": "^9.0.0",
-		"@types/chrome": "^0.3.6",
+		"@types/chrome": "^0.3.7",
 		"globals": "^17.13.0",
 		"parcel": "^2.16.4",
 		"typescript": "^6.0.3",
